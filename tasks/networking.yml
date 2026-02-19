@@ -1,0 +1,12 @@
+- name: Install networking tools
+  community.general.homebrew:
+    name:
+      - httpie
+      - iperf
+      - nmap
+      - curl
+      - wget
+    state: present
+  tags:
+    - install
+    - networking

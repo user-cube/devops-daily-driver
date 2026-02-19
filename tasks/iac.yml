@@ -1,0 +1,22 @@
+- name: Install terraform
+  community.general.homebrew:
+    name:
+      - terraform-docs
+      - tflint
+      - tfsec
+      - terraform-ls
+      - tenv
+    state: present
+  tags:
+    - install
+    - iac
+    - terraform
+
+- name: Install opentofu
+  community.general.homebrew:
+    name: opentofu
+    state: present
+  tags:
+    - install
+    - iac
+    - opentofu
