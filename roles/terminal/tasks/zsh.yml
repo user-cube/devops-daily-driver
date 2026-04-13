@@ -1,3 +1,12 @@
+- name: Install Oh My Zsh
+  ansible.builtin.shell: |
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  args:
+    creates: "{{ lookup('env', 'HOME') }}/.oh-my-zsh"
+  tags:
+    - install
+    - zsh
+
 - name: Download powerlevel10k theme
   ansible.builtin.git:
     repo: "{{ zsh_theme_repo }}"
@@ -7,7 +16,7 @@
     - install
     - zsh
 
-- name: Setup zsh
+- name: Install zsh plugins
   community.general.homebrew:
     name:
       - zsh-syntax-highlighting
@@ -16,3 +25,22 @@
   tags:
     - install
     - zsh
+
+- name: Install pyenv
+  community.general.homebrew:
+    name: pyenv
+    state: present
+  tags:
+    - install
+    - zsh
+    - pyenv
+
+- name: Install nvm
+  ansible.builtin.shell: |
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+  args:
+    creates: "{{ lookup('env', 'HOME') }}/.nvm/nvm.sh"
+  tags:
+    - install
+    - zsh
+    - nvm

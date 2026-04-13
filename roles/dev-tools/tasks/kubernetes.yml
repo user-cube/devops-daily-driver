@@ -27,6 +27,7 @@
       - helmfile
       - kyverno
       - kubeconform
+      - kubecolor
     state: present
   tags:
     - install

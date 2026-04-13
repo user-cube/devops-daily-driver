@@ -13,6 +13,17 @@
     - iac
     - terraform
 
+- name: Install secrets management tools
+  community.general.homebrew:
+    name:
+      - age
+      - sops
+    state: present
+  tags:
+    - install
+    - iac
+    - secrets
+
 - name: Install opentofu language server
   community.general.homebrew:
     name: tofu-ls
