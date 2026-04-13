@@ -1,0 +1,8 @@
+---
+- import_tasks: macos.yml
+  tags:
+    - macos
+    - dock
+    - finder
+    - keyboard
+    - install

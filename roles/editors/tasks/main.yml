@@ -1,0 +1,5 @@
+---
+- import_tasks: editors.yml
+  tags:
+    - editors
+    - install

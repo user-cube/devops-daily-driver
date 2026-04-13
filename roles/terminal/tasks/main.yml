@@ -1,0 +1,26 @@
+---
+- import_tasks: terminal.yml
+  tags:
+    - terminal
+    - install
+
+- import_tasks: ghostty.yml
+  tags:
+    - terminal
+    - ghostty
+    - install
+
+- import_tasks: zsh.yml
+  tags:
+    - zsh
+    - install
+
+- import_tasks: fonts.yml
+  tags:
+    - fonts
+    - install
+
+- import_tasks: nvim.yml
+  tags:
+    - nvim
+    - install

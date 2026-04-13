@@ -1,0 +1,6 @@
+---
+- import_tasks: custom-tools.yml
+  tags:
+    - custom-tools
+    - demo
+    - install

@@ -1,0 +1,34 @@
+---
+- import_tasks: git.yml
+  tags:
+    - git-tools
+    - gh-cli
+    - install
+
+- import_tasks: golang.yml
+  tags:
+    - golang
+    - golang-tools
+    - install
+
+- import_tasks: aws.yml
+  tags:
+    - aws
+    - install
+
+- import_tasks: cicd.yml
+  tags:
+    - cicd
+    - install
+
+- import_tasks: kubernetes.yml
+  tags:
+    - kubernetes
+    - cluster-visualization
+    - kubernetes-cli-tools
+    - install
+
+- import_tasks: iac.yml
+  tags:
+    - iac
+    - install

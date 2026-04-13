@@ -1,6 +1,4 @@
 ---
-# Handlers for window manager and hotkey daemon (run after notifying tasks complete)
-# Start handlers are idempotent: only start if the service is not already running.
 - name: Start Yabai
   ansible.builtin.shell: |
     if pgrep -x yabai >/dev/null; then echo already_running; else yabai --start-service && echo started; fi

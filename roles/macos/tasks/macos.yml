@@ -1,0 +1,191 @@
+---
+- name: Configure macOS Dock
+  tags: macos, dock
+  block:
+    - name: Set Dock size (small)
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: tilesize
+        type: float
+        value: 28
+
+    - name: Disable Dock magnification
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: magnification
+        type: bool
+        value: false
+
+    - name: Set Dock position to right
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: orientation
+        type: string
+        value: right
+
+    - name: Set minimize window effect to Genie
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: mineffect
+        type: string
+        value: genie
+
+    - name: Disable minimize windows into application icon
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: minimize-to-application
+        type: bool
+        value: false
+
+    - name: Disable Dock auto-hide
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: autohide
+        type: bool
+        value: false
+
+    - name: Enable animate opening applications
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: launchanim
+        type: bool
+        value: true
+
+    - name: Show indicators for open applications
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: show-process-indicators
+        type: bool
+        value: true
+
+    - name: Disable show recent apps in Dock
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: show-recents
+        type: bool
+        value: false
+
+    - name: Restart Dock to apply changes
+      ansible.builtin.command: killall Dock
+      changed_when: true
+
+- name: Configure macOS Finder
+  tags: macos, finder
+  block:
+    - name: Show all filename extensions
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: AppleShowAllExtensions
+        type: bool
+        value: true
+
+    - name: Show hidden files
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllFiles
+        type: bool
+        value: true
+
+    - name: Show path bar
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: ShowPathbar
+        type: bool
+        value: true
+
+    - name: Show status bar
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: ShowStatusBar
+        type: bool
+        value: true
+
+    - name: Keep folders on top when sorting by name
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: _FXSortFoldersFirst
+        type: bool
+        value: true
+
+    - name: Search the current folder by default
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: FXDefaultSearchScope
+        type: string
+        value: SCcf
+
+    - name: Disable the warning when changing a file extension
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: FXEnableExtensionChangeWarning
+        type: bool
+        value: false
+
+    - name: Use list view by default
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: FXPreferredViewStyle
+        type: string
+        value: clmv
+
+    - name: Restart Finder to apply changes
+      ansible.builtin.command: killall Finder
+      changed_when: true
+
+- name: Configure macOS Keyboard
+  tags: macos, keyboard
+  block:
+    - name: Enable full keyboard access for all controls
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: AppleKeyboardUIMode
+        type: int
+        value: 1
+
+    - name: Enable automatic capitalization
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticCapitalizationEnabled
+        type: bool
+        value: true
+
+    - name: Enable automatic period substitution
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticPeriodSubstitutionEnabled
+        type: bool
+        value: true
+
+    - name: Disable Spotlight shortcut (⌘Space) to free it for Raycast
+      community.general.osx_defaults:
+        domain: com.apple.symbolichotkeys
+        key: AppleSymbolicHotKeys
+        type: dict
+        value:
+          "60":
+            enabled: false
+            value:
+              parameters: [32, 49, 262144]
+              type: standard
+          "61":
+            enabled: false
+            value:
+              parameters: [32, 49, 786432]
+              type: standard
+          "64":
+            enabled: false
+            value:
+              parameters: [32, 49, 1048576]
+              type: standard
+          "65":
+            enabled: false
+            value:
+              parameters: [32, 49, 1572864]
+              type: standard
+
+    - name: Set Raycast global hotkey to ⌘Space
+      community.general.osx_defaults:
+        domain: com.raycast.macos
+        key: raycastGlobalHotkey
+        type: string
+        value: "Command-49"

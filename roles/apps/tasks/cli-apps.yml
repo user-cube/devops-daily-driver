@@ -26,6 +26,21 @@
     - install
     - cli-apps
 
+- name: Install linters and formatters
+  community.general.homebrew:
+    name:
+      - shellcheck
+      - shfmt
+      - pylint
+      - black
+      - prettier
+      - stylua
+    state: present
+  tags:
+    - install
+    - cli-apps
+    - linters
+
 - name: Monitoring tools
   community.general.homebrew:
     name:
@@ -44,6 +59,8 @@
       - autoenv
       - go-task
       - asciinema
+      - yazi
+      - kubectx
     state: present
   tags:
     - install

@@ -6,6 +6,7 @@
       - tfsec
       - terraform-ls
       - tenv
+      - ansible-lint
     state: present
   tags:
     - install
@@ -14,7 +15,9 @@
 
 - name: Install opentofu
   community.general.homebrew:
-    name: opentofu
+    name:
+      - opentofu
+      - tofu-ls
     state: present
   tags:
     - install

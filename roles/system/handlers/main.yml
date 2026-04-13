@@ -1,0 +1,8 @@
+---
+- name: Restart Yabai
+  ansible.builtin.command: yabai --restart-service
+  ignore_errors: true
+
+- name: Restart skhd
+  ansible.builtin.command: skhd --restart-service
+  ignore_errors: true

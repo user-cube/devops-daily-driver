@@ -9,6 +9,7 @@
       - font-hack-nerd-font
       - obsidian
       - betterdisplay
+      - stats
     state: present
   tags:
     - install

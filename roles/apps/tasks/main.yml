@@ -1,0 +1,20 @@
+---
+- import_tasks: ui-apps.yml
+  tags:
+    - ui-apps
+    - install
+
+- import_tasks: cli-apps.yml
+  tags:
+    - cli-apps
+    - install
+
+- import_tasks: docs.yml
+  tags:
+    - documentation-tools
+    - install
+
+- import_tasks: networking.yml
+  tags:
+    - networking
+    - install

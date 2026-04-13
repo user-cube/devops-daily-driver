@@ -1,10 +1,3 @@
-- name: Install custom golang tools
-  ansible.builtin.command: go install {{ item }}
-  loop: "{{ custom_go_tools }}"
-  tags:
-    - install
-    - custom-tools
-
 - name: Install tools for demo
   community.general.homebrew:
     name:
@@ -13,4 +6,12 @@
     state: present
   tags:
     - demo
+    - custom-tools
+
+- name: Install user-cube tools
+  community.general.homebrew:
+    name: "{{ custom_user_cube_tools }}"
+    state: present
+  tags:
+    - user-cube
     - custom-tools

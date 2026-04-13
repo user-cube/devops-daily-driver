@@ -1,0 +1,5 @@
+---
+- import_tasks: virtualization.yml
+  tags:
+    - virtualization
+    - install
