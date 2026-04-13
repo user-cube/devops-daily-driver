@@ -97,18 +97,34 @@ aws --version && eksctl version && aws-iam-authenticator version && granted --ve
 
 ## Configuration variables
 
-Machine-specific variables live in `host_vars/localhost.yml`. Role-specific defaults (dotfiles repo, font URLs, nvim config, etc.) are in each role's `vars/main.yml`.
+Machine-specific variables live in `host_vars/localhost.yml`. Role-specific defaults (dotfiles repo, font URLs, etc.) are in each role's `defaults/main.yml` and can be overridden via `host_vars`.
 
-To override without editing files:
+Key variables to configure in `host_vars/localhost.yml`:
 
-```bash
-# Different dotfiles repository
-ansible-playbook daily-driver.yml -K --tags dotfiles -e "dotfiles_repo=https://github.com/your-user/dotfiles.git"
+```yaml
+# Cloud providers
+install_aws: true
+install_azure: false
+install_gcp: false
+
+# Dotfiles
+dotfiles_repo: "https://github.com/your-user/dotfiles.git"
+
+# Directories to create in $HOME
+directories_to_create:
+  - personal
+  - work
+
+# Custom tools (tap + formulae)
+custom_user_taps:
+  - your-tap/tap
+custom_user_tools:
+  - your-tap/tap/tool-name
 ```
 
 ## Dotfiles
 
-Clones the repository defined in `roles/system/vars/main.yml`, syncs `.config` and `.config_macos` to `~/.config`, copies `.zshrc_macos` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config_macos` triggers a restart of Yabai and skhd-zig.
+Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` and `.config_macos` to `~/.config`, copies `.zshrc_macos` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config_macos` triggers a restart of Yabai and skhd-zig.
 
 ## macOS settings
 
@@ -128,3 +144,25 @@ Installs Ghostty (tip/development build) and syncs config from dotfiles if `dotf
 ## Neovim
 
 Installs `neovim` via Homebrew. Config is managed via dotfiles.
+
+## GPG
+
+The `dev-tools` role installs `gnupg` and `pinentry-mac`, and configures `~/.gnupg/gpg-agent.conf` automatically.
+
+To generate a key and add it to GitHub:
+
+```bash
+# Generate key (RSA 4096, no expiry)
+gpg --full-generate-key
+
+# Get the key ID
+gpg --list-secret-keys --keyid-format=long
+
+# Export public key and add to GitHub → Settings → SSH and GPG keys
+gpg --armor --export <KEY_ID>
+
+# Configure git to sign commits
+git config --global user.signingkey <KEY_ID>
+git config --global commit.gpgsign true
+echo 'export GPG_TTY=$(tty)' >> ~/.zshrc
+```
