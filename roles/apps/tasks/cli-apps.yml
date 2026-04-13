@@ -64,7 +64,7 @@
     name:
       - tree
       - watch
-      - autoenv
+      - direnv
       - go-task
       - asciinema
       - yazi
