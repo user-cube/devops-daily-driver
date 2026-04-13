@@ -8,10 +8,18 @@
     - demo
     - custom-tools
 
-- name: Install user-cube tools
-  community.general.homebrew:
-    name: "{{ custom_user_cube_tools }}"
+- name: Add tap repositories for custom tools
+  community.general.homebrew_tap:
+    name: "{{ custom_user_taps }}"
     state: present
   tags:
-    - user-cube
     - custom-tools
+    - install
+
+- name: Install custom tools
+  community.general.homebrew:
+    name: "{{ custom_user_tools }}"
+    state: present
+  tags:
+    - custom-tools
+    - install

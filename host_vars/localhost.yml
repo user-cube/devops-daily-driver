@@ -1,0 +1,22 @@
+---
+# Cloud providers — set to true to install
+install_aws: true
+install_azure: false
+install_gcp: false
+
+# Dotfiles
+dotfiles_repo: "https://github.com/user-cube/dotfiles.git"
+
+# Directories to create in $HOME
+directories_to_create:
+  - personal
+  - work
+  - hooks
+
+# Custom tools
+custom_user_taps:
+  - user-cube/tap
+
+custom_user_tools:
+  - user-cube/tap/kontext
+  - user-cube/tap/aws-cli-manager

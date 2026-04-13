@@ -5,16 +5,18 @@
   register: _yabai_start
   changed_when: "'started' in _yabai_start.stdout"
 
-- name: Start skhd
+- name: Start skhd-zig
   ansible.builtin.shell: |
     if pgrep -x skhd >/dev/null; then echo already_running; else skhd --start-service && echo started; fi
   register: _skhd_start
   changed_when: "'started' in _skhd_start.stdout"
 
 - name: Restart Yabai
-  ansible.builtin.command: yabai --restart-service
+  ansible.builtin.shell: |
+    if yabai --restart-service 2>/dev/null; then echo restarted; else yabai --start-service && echo started; fi
+  changed_when: true
   ignore_errors: true
 
-- name: Restart skhd
+- name: Restart skhd-zig
   ansible.builtin.command: skhd --restart-service
   ignore_errors: true

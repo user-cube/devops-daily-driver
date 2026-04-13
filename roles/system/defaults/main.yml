@@ -1,9 +1,7 @@
 ---
 home_dir: "{{ lookup('env', 'HOME') }}"
-
 dotfiles_repo: "https://github.com/user-cube/dotfiles.git"
 dotfiles_dest: "{{ home_dir }}/dotfiles"
-
 directories_to_create:
   - personal
   - work

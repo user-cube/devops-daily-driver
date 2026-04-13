@@ -1,0 +1,18 @@
+---
+- name: Tap Google Cloud SDK repository
+  community.general.homebrew_tap:
+    name: google/cloud-sdk
+    state: present
+  when: install_gcp | bool
+  tags:
+    - install
+    - gcp
+
+- name: Install Google Cloud SDK
+  community.general.homebrew_cask:
+    name: google-cloud-sdk
+    state: present
+  when: install_gcp | bool
+  tags:
+    - install
+    - gcp

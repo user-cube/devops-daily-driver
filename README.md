@@ -3,24 +3,28 @@
 ## Project structure
 
 ```
-macos/
-├── ansible.cfg          # Inventory path, deprecation_warnings
-├── inventory.yml        # Explicit localhost (avoids Ansible warnings)
-├── daily-driver.yml     # Main playbook
-├── requirements.yml     # Galaxy collections
-├── README.md
-├── vars/
-│   └── main.yml         # Configuration variables
-├── handlers/
-│   └── main.yml         # Yabai/skhd start and restart
-└── tasks/               # Task files included by the playbook
-    ├── preflight.yml
-    ├── directories.yml
-    ├── cli-apps.yml
-    └── ...
+devops-daily-driver/
+├── ansible.cfg              # Inventory path, deprecation_warnings
+├── inventory.yml            # Explicit localhost (avoids Ansible warnings)
+├── daily-driver.yml         # Main playbook
+├── requirements.yml         # Galaxy collections
+├── host_vars/
+│   └── localhost.yml        # Machine-specific variables (cloud providers, etc.)
+└── roles/
+    ├── system/              # preflight, directories, dotfiles
+    ├── macos/               # dock, finder, keyboard shortcuts
+    ├── apps/                # ui-apps, cli-apps, docs, networking
+    ├── dev-tools/           # git, golang, cicd, kubernetes, iac
+    ├── virtualization/      # docker, colima, buildx
+    ├── editors/             # vscode, cursor, jetbrains, neovim
+    ├── terminal/            # warp, ghostty, zsh, fonts, nvim
+    ├── aws/                 # awscli, eksctl, granted
+    ├── azure/               # azure-cli
+    ├── gcp/                 # google-cloud-sdk
+    └── custom-tools/        # imagemagick, gifsicle, user-cube tools
 ```
 
-## Install homebrew
+## Install Homebrew
 
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -34,7 +38,7 @@ brew install ansible
 
 ## Install Ansible Galaxy collections
 
-The playbook uses the `community.general` collection (homebrew, homebrew_cask, homebrew_tap) and `ansible.posix` (synchronize for dotfiles):
+The playbook uses `community.general` (homebrew, homebrew_cask, homebrew_tap) and `ansible.posix` (synchronize for dotfiles):
 
 ```bash
 ansible-galaxy collection install -r requirements.yml
@@ -42,81 +46,85 @@ ansible-galaxy collection install -r requirements.yml
 
 ## Run the playbook
 
-From the `macos/` directory (so `ansible.cfg` and `inventory.yml` are found):
-
 ```bash
 ansible-playbook daily-driver.yml -K
 ```
 
-Pre-flight checks (Homebrew installed, macOS only) run automatically. If Homebrew is missing, the playbook fails with instructions to install it.
+Pre-flight checks (Homebrew installed, macOS only) run automatically on every play.
 
-## Run only specific tasks (tags)
-
-To install only AWS tools:
+## Run only specific roles (tags)
 
 ```bash
-ansible-playbook daily-driver.yml -K --tags aws
-```
+# Only macOS settings
+ansible-playbook daily-driver.yml -K --tags macos
 
-Other useful tags: `cli-apps`, `kubernetes`, `git`, `editors`, `dotfiles`, etc. Pre-flight checks use tag `preflight` (and run by default); to skip them use `--skip-tags preflight`.
-
-**Test CLI apps only:**
-
-```bash
+# Only CLI apps
 ansible-playbook daily-driver.yml -K --tags cli-apps
+
+# Only dotfiles
+ansible-playbook daily-driver.yml -K --tags dotfiles
 ```
 
-Verify: `which yabai skhd fzf zoxide bat jq yq rg`.
+Available tags: `system`, `preflight`, `directories`, `dotfiles`, `macos`, `dock`, `finder`, `keyboard`, `apps`, `ui-apps`, `cli-apps`, `networking`, `dev-tools`, `git-tools`, `golang`, `cicd`, `kubernetes`, `iac`, `virtualization`, `editors`, `terminal`, `ghostty`, `zsh`, `fonts`, `nvim`, `aws`, `azure`, `gcp`, `custom-tools`.
+
+## Cloud providers
+
+Cloud provider roles are **opt-in** and default to `false`. Enable them in `host_vars/localhost.yml`:
+
+```yaml
+install_aws: true
+install_azure: false
+install_gcp: false
+```
+
+Or override on the fly:
+
+```bash
+ansible-playbook daily-driver.yml -K -e install_aws=true
+```
+
+You can also combine with tags to run a single provider:
+
+```bash
+ansible-playbook daily-driver.yml -K --tags aws -e install_aws=true
+```
+
+After installing AWS tools, verify:
+
+```bash
+aws --version && eksctl version && aws-iam-authenticator version && granted --version
+```
 
 ## Configuration variables
 
-Variables are defined in **`vars/main.yml`** (dotfiles repo, directories, NvChad, Powerlevel10k, fonts, custom go tools). To override without editing the file:
+Machine-specific variables live in `host_vars/localhost.yml`. Role-specific defaults (dotfiles repo, font URLs, nvim config, etc.) are in each role's `vars/main.yml`.
+
+To override without editing files:
 
 ```bash
 # Different dotfiles repository
 ansible-playbook daily-driver.yml -K --tags dotfiles -e "dotfiles_repo=https://github.com/your-user/dotfiles.git"
-
-# Different directories in $HOME (YAML list)
-ansible-playbook daily-driver.yml -K --tags directories -e '{"directories_to_create": ["personal", "work", "hooks", "projects"]}'
 ```
 
 ## Dotfiles
 
-Dotfiles tasks clone the repository defined in `vars/main.yml`, create `~/.config` if missing, and copy/sync files in an **idempotent** way. Git config files are copied to `$HOME` if present in the repo: `.gitconfig-personal`, `.gitconfig-work`, `.gitconfig`. To use a different repository, set the `dotfiles_repo` variable (see above).
+Clones the repository defined in `roles/system/vars/main.yml`, syncs `.config` and `.config_macos` to `~/.config`, copies `.zshrc_macos` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config_macos` triggers a restart of Yabai and skhd-zig.
 
-## Ghostty terminal
+## macOS settings
 
-The playbook installs **Ghostty (tip)**, the development build: `brew install --cask ghostty@tip`. Config is synced from your dotfiles: if `dotfiles/.config/ghostty/` exists (e.g. a `config` file), it is copied to `~/.config/ghostty/`. Run with `--tags ghostty` to install Ghostty and sync config only (dotfiles should be present).
+The `macos` role configures:
+- **Dock** — size, position (right), magnification, animation, indicators
+- **Finder** — extensions, hidden files, path bar, status bar, column view
+- **Keyboard** — full keyboard access, Spotlight disabled, Raycast bound to ⌘Space
 
-## Test fonts
+## Services (Yabai, skhd-zig)
 
-To install only the MesloLGS fonts (Powerlevel10k):
+Yabai and skhd-zig are started via handlers after install. Start handlers are idempotent — they only start a service if it is not already running (`pgrep`). Syncing dotfiles `.config_macos` triggers a restart of both services.
 
-```bash
-ansible-playbook daily-driver.yml -K --tags fonts
-```
+## Ghostty
 
-Verify: `ls ~/Library/Fonts/MesloLGS*` or open Font Book and search for "MesloLGS".
+Installs Ghostty (tip/development build) and syncs config from dotfiles if `dotfiles/.config/ghostty/` exists.
 
-## Test AWS
+## Neovim
 
-After running the tasks with tag `aws`, verify the installations:
-
-```bash
-aws --version
-eksctl version
-aws-iam-authenticator version
-granted --version
-```
-
-## Services (Yabai, skhd)
-
-Yabai and skhd are started via **handlers** at the end of the play. They are notified when: laptop tools are installed (cli-apps), dotfiles `.config_macos` are synced (config reload), or when you run with tag `services`. Handlers are defined in `handlers/main.yml`. Start handlers are **idempotent**: they only start a service if it is not already running (using `pgrep`).
-
-## Notes
-
-Open neovim and run:
-
-```nvim
-:MasonInstallAll
-```
+Installs `neovim` via Homebrew. Config is managed via dotfiles.

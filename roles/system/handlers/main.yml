@@ -1,8 +1,10 @@
 ---
 - name: Restart Yabai
-  ansible.builtin.command: yabai --restart-service
+  ansible.builtin.shell: |
+    if yabai --restart-service 2>/dev/null; then echo restarted; else yabai --start-service && echo started; fi
+  changed_when: true
   ignore_errors: true
 
-- name: Restart skhd
+- name: Restart skhd-zig
   ansible.builtin.command: skhd --restart-service
   ignore_errors: true

@@ -1,17 +1,7 @@
-- name: Clone NvChad starter repository
-  ansible.builtin.git:
-    repo: "{{ nvim_starter_repo }}"
-    dest: "{{ nvim_config_dest }}"
-    update: yes
+- name: Install Neovim
+  community.general.homebrew:
+    name: neovim
+    state: present
   tags:
     - nvim
     - install
-
-- name: Open nvim to trigger initial setup
-  command: nvim
-  async: 1
-  poll: 0
-  ignore_errors: true
-  tags:
-  - nvim
-  - install

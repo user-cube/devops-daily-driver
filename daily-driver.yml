@@ -25,6 +25,18 @@
         - documentation-tools
         - networking
 
+    - role: aws
+      tags:
+        - aws
+
+    - role: azure
+      tags:
+        - azure
+
+    - role: gcp
+      tags:
+        - gcp
+
     - role: dev-tools
       tags:
         - dev-tools
@@ -32,7 +44,6 @@
         - gh-cli
         - golang
         - golang-tools
-        - aws
         - cicd
         - kubernetes
 

@@ -13,11 +13,9 @@
     - iac
     - terraform
 
-- name: Install opentofu
+- name: Install opentofu language server
   community.general.homebrew:
-    name:
-      - opentofu
-      - tofu-ls
+    name: tofu-ls
     state: present
   tags:
     - install

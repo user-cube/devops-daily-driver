@@ -1,29 +1,30 @@
-- name: Install AWS Packages
+---
+- name: Install AWS CLI and tools
   community.general.homebrew:
     name:
       - awscli
       - aws-iam-authenticator
       - eksctl
     state: present
+  when: install_aws | bool
   tags:
     - install
     - aws
-    - cli-tools
 
-- name: Tap AWS Role Assume repository
+- name: Tap granted repository
   community.general.homebrew_tap:
     name: common-fate/granted
     state: present
+  when: install_aws | bool
   tags:
     - install
     - aws
-    - cli-tools
 
-- name: Install AWS Role Assume (granted)
+- name: Install granted (AWS role assumption)
   community.general.homebrew:
     name: common-fate/granted/granted
     state: present
+  when: install_aws | bool
   tags:
     - install
     - aws
-    - cli-tools

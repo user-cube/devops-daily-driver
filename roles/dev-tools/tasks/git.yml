@@ -6,7 +6,27 @@
       - gitleaks
       - lazygit
       - pre-commit
+      - gnupg
+      - pinentry-mac
     state: present
+  tags:
+    - install
+    - git-tools
+
+- name: Ensure ~/.gnupg directory exists
+  ansible.builtin.file:
+    path: "{{ lookup('env', 'HOME') }}/.gnupg"
+    state: directory
+    mode: "0700"
+  tags:
+    - install
+    - git-tools
+
+- name: Configure pinentry-mac for GPG agent
+  ansible.builtin.copy:
+    dest: "{{ lookup('env', 'HOME') }}/.gnupg/gpg-agent.conf"
+    content: "pinentry-program /opt/homebrew/bin/pinentry-mac\n"
+    mode: "0600"
   tags:
     - install
     - git-tools

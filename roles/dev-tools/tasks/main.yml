@@ -11,11 +11,6 @@
     - golang-tools
     - install
 
-- import_tasks: aws.yml
-  tags:
-    - aws
-    - install
-
 - import_tasks: cicd.yml
   tags:
     - cicd

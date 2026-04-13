@@ -33,7 +33,7 @@
     delete: no
   notify:
     - Restart Yabai
-    - Restart skhd
+    - Restart skhd-zig
   tags:
     - dotfiles
     - install

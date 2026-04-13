@@ -1,7 +1,17 @@
-- name: Install terminal
+- name: Install terminal apps
   community.general.homebrew_cask:
-    name: warp
+    name:
+      - warp
     state: present
   tags:
     - install
     - terminal
+
+- name: Install tmux
+  community.general.homebrew:
+    name: tmux
+    state: present
+  tags:
+    - install
+    - terminal
+    - tmux

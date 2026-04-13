@@ -1,4 +1,0 @@
----
-custom_user_cube_tools:
-  - github.com/user-cube/kontext
-  - github.com/user-cube/aws-cli-manager

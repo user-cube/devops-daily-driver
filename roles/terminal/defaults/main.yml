@@ -1,12 +1,7 @@
 ---
 home_dir: "{{ lookup('env', 'HOME') }}"
-
-nvim_starter_repo: "https://github.com/NvChad/starter"
-nvim_config_dest: "{{ home_dir }}/.config/nvim"
-
 zsh_theme_repo: "https://github.com/romkatv/powerlevel10k.git"
 zsh_theme_dest: "{{ home_dir }}/powerlevel10k"
-
 fonts_base_url: "https://github.com/romkatv/powerlevel10k-media/raw/master"
 fonts_dest_dir: "{{ home_dir }}/Library/Fonts"
 fonts_meslo_files:

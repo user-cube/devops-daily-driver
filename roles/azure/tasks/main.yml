@@ -1,0 +1,9 @@
+---
+- name: Install Azure CLI
+  community.general.homebrew:
+    name: azure-cli
+    state: present
+  when: install_azure | bool
+  tags:
+    - install
+    - azure

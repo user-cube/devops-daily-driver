@@ -1,14 +1,22 @@
+- name: Tap skhd-zig repository
+  community.general.homebrew_tap:
+    name: jackielii/tap
+    state: present
+  tags:
+    - install
+    - cli-apps
+
 - name: Install laptop configuration tools
   community.general.homebrew:
     name:
       - koekeishiya/formulae/yabai
-      - koekeishiya/formulae/skhd
+      - jackielii/tap/skhd-zig
       - fzf
       - zoxide
     state: present
   notify:
     - Start Yabai
-    - Start skhd
+    - Start skhd-zig
   tags:
     - install
     - cli-apps
