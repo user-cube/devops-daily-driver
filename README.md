@@ -52,7 +52,7 @@ devops-daily-driver/
     ├── dev-tools/           # git, gnupg, golang, cicd, kubernetes, iac
     ├── virtualization/      # docker, colima, buildx
     ├── editors/             # vscode, cursor, jetbrains, neovim
-    ├── terminal/            # warp, ghostty, zsh, tmux, fonts, nvim
+    ├── terminal/            # ghostty, zsh, tmux, fonts, nvim
     ├── aws/                 # awscli, eksctl, granted
     ├── azure/               # azure-cli
     ├── gcp/                 # google-cloud-sdk
