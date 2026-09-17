@@ -1,12 +1,38 @@
+- name: Tap terraform-linters repository
+  community.general.homebrew_tap:
+    name: terraform-linters/tap
+    state: present
+  tags:
+    - install
+    - iac
+    - terraform
+
 - name: Install terraform
   community.general.homebrew:
     name:
       - terraform-docs
-      - tflint
       - tfsec
       - terraform-ls
       - tenv
       - ansible-lint
+    state: present
+  tags:
+    - install
+    - iac
+    - terraform
+
+- name: Trust tflint from terraform-linters tap
+  ansible.builtin.command: brew trust --cask terraform-linters/tap/tflint
+  register: tflint_trust
+  changed_when: "'Trusted ' in tflint_trust.stdout"
+  tags:
+    - install
+    - iac
+    - terraform
+
+- name: Install tflint
+  community.general.homebrew_cask:
+    name: terraform-linters/tap/tflint
     state: present
   tags:
     - install

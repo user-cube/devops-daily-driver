@@ -20,6 +20,15 @@
     - install
     - aws
 
+- name: Trust granted from common-fate tap
+  ansible.builtin.command: brew trust --formula common-fate/granted/granted
+  register: granted_trust
+  changed_when: "'Trusted ' in granted_trust.stdout"
+  when: install_aws | bool
+  tags:
+    - install
+    - aws
+
 - name: Install granted (AWS role assumption)
   community.general.homebrew:
     name: common-fate/granted/granted

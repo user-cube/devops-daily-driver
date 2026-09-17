@@ -16,6 +16,16 @@
     - custom-tools
     - install
 
+- name: Trust custom tools from user taps
+  ansible.builtin.command: >-
+    brew trust --formula {{ custom_user_tools | join(' ') }}
+  register: custom_tools_trust
+  changed_when: "'Trusted ' in custom_tools_trust.stdout"
+  when: custom_user_tools | length > 0
+  tags:
+    - custom-tools
+    - install
+
 - name: Install custom tools
   community.general.homebrew:
     name: "{{ custom_user_tools }}"

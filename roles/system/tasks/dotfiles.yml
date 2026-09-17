@@ -47,6 +47,15 @@
     - dotfiles
     - install
 
+- name: Copy .p10k.zsh to ~/.p10k.zsh
+  ansible.builtin.copy:
+    src: "{{ dotfiles_dest }}/.p10k.zsh"
+    dest: "{{ home_dir }}/.p10k.zsh"
+    remote_src: yes
+  tags:
+    - dotfiles
+    - install
+
 - name: Sync dotfiles git_hooks to ~/git_hooks
   ansible.posix.synchronize:
     src: "{{ dotfiles_dest }}/git_hooks/"
@@ -68,11 +77,15 @@
     - dotfiles
     - install
 
+# .gitconfig-work keeps a redacted placeholder in the public dotfiles repo, so
+# the real address is filled in locally and has to survive a run. The other
+# two are owned by the repo and get overwritten as usual.
 - name: Copy gitconfig files from dotfiles to HOME
   ansible.builtin.copy:
     src: "{{ dotfiles_dest }}/{{ item.item }}"
     dest: "{{ home_dir }}/{{ item.item }}"
     remote_src: yes
+    force: "{{ item.item != '.gitconfig-work' }}"
   loop: "{{ gitconfig_files_check.results }}"
   when: item.stat.exists | default(false)
   tags:

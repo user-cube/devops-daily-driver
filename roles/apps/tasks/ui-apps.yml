@@ -14,3 +14,17 @@
   tags:
     - install
     - ui-apps
+
+# Both ship installers that call sudo themselves. mac_sudo_password comes from
+# the play's vars_prompt; if left empty the parameter is omitted entirely.
+- name: Install Logitech peripheral tools
+  community.general.homebrew_cask:
+    name:
+      - logi-options+
+      - logitech-g-hub
+    state: present
+    sudo_password: "{{ mac_sudo_password | default(omit, true) }}"
+  tags:
+    - install
+    - ui-apps
+    - logitech

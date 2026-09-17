@@ -1,7 +1,25 @@
-- name: Tap skhd-zig repository
+- name: Tap repositories for laptop configuration tools
   community.general.homebrew_tap:
-    name: jackielii/tap
+    name:
+      - koekeishiya/formulae
+      - jackielii/tap
     state: present
+  tags:
+    - install
+    - cli-apps
+
+- name: Trust yabai from koekeishiya tap
+  ansible.builtin.command: brew trust --formula koekeishiya/formulae/yabai
+  register: yabai_trust
+  changed_when: "'Trusted ' in yabai_trust.stdout"
+  tags:
+    - install
+    - cli-apps
+
+- name: Trust skhd-zig from jackielii tap
+  ansible.builtin.command: brew trust --cask jackielii/tap/skhd-zig
+  register: skhd_trust
+  changed_when: "'Trusted ' in skhd_trust.stdout"
   tags:
     - install
     - cli-apps
@@ -10,12 +28,20 @@
   community.general.homebrew:
     name:
       - koekeishiya/formulae/yabai
-      - jackielii/tap/skhd-zig
       - fzf
       - zoxide
     state: present
   notify:
     - Start Yabai
+  tags:
+    - install
+    - cli-apps
+
+- name: Install skhd-zig
+  community.general.homebrew_cask:
+    name: jackielii/tap/skhd-zig
+    state: present
+  notify:
     - Start skhd-zig
   tags:
     - install

@@ -196,9 +196,15 @@
       ansible.builtin.command: /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
       changed_when: true
 
-    - name: Set Raycast global hotkey to ⌘Space
+    # Siri's shortcut defaults to holding ⌘Space and swallows the keystroke
+    # before any app sees it. Disabling Siri frees it for Raycast.
+    - name: Disable Siri to free ⌘Space
       community.general.osx_defaults:
-        domain: com.raycast.macos
-        key: raycastGlobalHotkey
-        type: string
-        value: "Command-49"
+        domain: com.apple.assistant.support
+        key: "Assistant Enabled"
+        type: bool
+        value: false
+
+# Raycast has no supported defaults key for its global hotkey; it is kept in an
+# encrypted internal database. Set ⌘Space by hand in
+# Raycast > Settings > General > Raycast Hotkey.

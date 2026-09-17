@@ -2,6 +2,14 @@
 - name: Install MacOS Applications for Daily Driver Use
   hosts: localhost
 
+  # Some casks ship their own installers that call sudo. brew runs as the normal
+  # user, so the password has to be handed to those tasks explicitly.
+  vars_prompt:
+    - name: mac_sudo_password
+      prompt: "sudo password (casks with own installers; enter to skip)"
+      private: true
+      default: ""
+
   roles:
     - role: system
       tags:
