@@ -20,3 +20,8 @@ custom_user_taps:
 custom_user_tools:
   - user-cube/tap/kontext
   - user-cube/tap/aws-cli-manager
+
+# Raycast settings export (.rayconfig), imported only via --tags raycast-import.
+# Keep this file outside the dotfiles repo if that repo is public — the export
+# is an opaque blob that may carry extension credentials.
+# raycast_config_path: "~/Documents/raycast.rayconfig"

@@ -206,6 +206,34 @@ signatures.
 `gpg.ssh.allowedSignersFile` at a file mapping emails to keys. That is a local
 verification concern only — GitHub verifies against the keys on your account.
 
+## Raycast
+
+Raycast keeps its settings in a SQLCipher-encrypted database and exposes no
+deeplink, CLI or `defaults` key to configure it, so nothing about it can be set
+declaratively. Two things follow.
+
+The **hotkey stays manual** — set ⌘Space in Settings → General → Raycast Hotkey.
+The playbook frees the shortcut by disabling the Spotlight and Siri bindings, but
+cannot assign it.
+
+Everything else can travel in a `.rayconfig` export (Settings → Advanced → Export
+Settings & Data), which covers extensions and their preferences, quicklinks,
+snippets, window layouts and general settings. Point `raycast_config_path` at it
+and run:
+
+```bash
+ansible-playbook daily-driver.yml --tags raycast-import
+```
+
+The task carries the `never` tag, so ordinary runs skip it — otherwise every run
+would pop Raycast's import dialog. Import still asks for confirmation; this makes
+it one click instead of reconfiguring extension by extension.
+
+> **Keep the export out of a public repo.** It is an opaque blob that may carry
+> extension credentials, so secret scanners like gitleaks will not catch them.
+> Store it in a password manager or private location. Raycast Pro's Cloud Sync
+> (`requiresPro`) removes the need for the file entirely.
+
 ## Manual steps
 
 The playbook cannot automate these:

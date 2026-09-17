@@ -29,3 +29,28 @@
     - install
     - ui-apps
     - logitech
+
+# Raycast keeps its settings in an encrypted internal database and exposes no
+# deeplink or defaults key to configure it, so a .rayconfig export is the only
+# way to carry an environment between machines. Keep that file OUT of a public
+# dotfiles repo: it can carry extension credentials and is an opaque blob, so
+# secret scanners will not catch them.
+#
+# Tagged `never`, so a normal run does not re-trigger Raycast's import dialog.
+# Run it deliberately:  ansible-playbook daily-driver.yml --tags raycast-import
+- name: Check whether a Raycast export is available
+  ansible.builtin.stat:
+    path: "{{ raycast_config_path | expanduser }}"
+  register: raycast_config
+  when: raycast_config_path | default('') | length > 0
+  tags:
+    - never
+    - raycast-import
+
+- name: Import Raycast settings
+  ansible.builtin.command: open -a Raycast "{{ raycast_config_path | expanduser }}"
+  when: raycast_config.stat.exists | default(false)
+  changed_when: true
+  tags:
+    - never
+    - raycast-import
