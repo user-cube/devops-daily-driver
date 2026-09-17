@@ -32,13 +32,27 @@ cp host_vars/localhost.yml host_vars/localhost.yml.bak
 # Edit host_vars/localhost.yml with your settings
 
 # 6. Run the playbook
-ansible-playbook daily-driver.yml -K
+ansible-playbook daily-driver.yml
+```
+
+The playbook prompts once for a sudo password. It is only used by casks that ship
+their own installers (currently the Logitech ones) — press enter to skip it and
+those tasks will fail while everything else proceeds. No task uses `become`, so
+`-K` is not needed.
+
+Preview a run without changing anything:
+
+```bash
+ansible-playbook daily-driver.yml --check
 ```
 
 ## Project structure
 
 ```
 devops-daily-driver/
+├── .github/workflows/       # CI: yamllint, ansible-lint, syntax-check
+├── .ansible-lint            # Rule config, with deferred rules documented
+├── .yamllint                # Line length, ignores .ansible/
 ├── ansible.cfg              # Inventory path, deprecation_warnings
 ├── inventory.yml            # Explicit localhost (avoids Ansible warnings)
 ├── daily-driver.yml         # Main playbook
@@ -63,16 +77,32 @@ devops-daily-driver/
 
 ```bash
 # Only macOS settings
-ansible-playbook daily-driver.yml -K --tags macos
+ansible-playbook daily-driver.yml --tags macos
 
 # Only CLI apps
-ansible-playbook daily-driver.yml -K --tags cli-apps
+ansible-playbook daily-driver.yml --tags cli-apps
 
 # Only dotfiles
-ansible-playbook daily-driver.yml -K --tags dotfiles
+ansible-playbook daily-driver.yml --tags dotfiles
 ```
 
-Available tags: `system`, `preflight`, `directories`, `dotfiles`, `macos`, `dock`, `finder`, `keyboard`, `apps`, `ui-apps`, `cli-apps`, `networking`, `dev-tools`, `git-tools`, `golang`, `cicd`, `kubernetes`, `iac`, `virtualization`, `editors`, `terminal`, `ghostty`, `zsh`, `fonts`, `nvim`, `aws`, `azure`, `gcp`, `custom-tools`.
+Tags come in two layers. **Role and area tags** are the ones you normally reach
+for:
+
+`system`, `preflight`, `directories`, `dotfiles`, `macos`, `dock`, `finder`,
+`keyboard`, `apps`, `ui-apps`, `cli-apps`, `logitech`, `networking`,
+`documentation-tools`, `dev-tools`, `git-tools`, `gh-cli`, `glab`, `golang`,
+`cicd`, `kubernetes`, `cluster-visualization`, `iac`, `terraform`, `opentofu`,
+`secrets`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
+`terminal`, `ghostty`, `zsh`, `pyenv`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
+`gcp`, `custom-tools`, `demo`.
+
+Individual packages also carry their own tag (`bat`, `jq`, `htop`, `k9s`, …), so
+you can install a single tool without running its whole role:
+
+```bash
+ansible-playbook daily-driver.yml --tags k9s
+```
 
 ## Configuration variables
 
@@ -106,13 +136,13 @@ custom_user_tools:
 Cloud provider roles are **opt-in** and default to `false`. Enable them in `host_vars/localhost.yml` or override on the fly:
 
 ```bash
-ansible-playbook daily-driver.yml -K -e install_aws=true
+ansible-playbook daily-driver.yml -e install_aws=true
 ```
 
 Combine with tags to run a single provider:
 
 ```bash
-ansible-playbook daily-driver.yml -K --tags aws -e install_aws=true
+ansible-playbook daily-driver.yml --tags aws -e install_aws=true
 ```
 
 ## Dotfiles
@@ -124,11 +154,19 @@ Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` and 
 The `macos` role configures:
 - **Dock** — size, position (right), magnification, animation, indicators
 - **Finder** — extensions, hidden files, path bar, status bar, column view
-- **Keyboard** — full keyboard access, Spotlight disabled, Raycast bound to ⌘Space
+- **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled
+
+  Both Spotlight and Siri bind ⌘Space; Siri's default is *hold* ⌘Space, which
+  swallows the keystroke before any app sees it. The playbook frees the shortcut
+  but **cannot set Raycast's hotkey** — Raycast keeps it in an encrypted internal
+  database with no supported `defaults` key. See [Manual steps](#manual-steps).
 
 ## Services (Yabai, skhd-zig)
 
-Yabai and skhd-zig are started via handlers after install. Start handlers are idempotent — they only start a service if it is not already running (`pgrep`). Syncing dotfiles `.config_macos` triggers a restart of both services.
+The `cli-apps` tasks check with `pgrep` whether each service is running and start
+it if not, so "running" is the desired state rather than a side effect of the
+install task firing a handler. Syncing dotfiles `.config_macos` still triggers a
+restart of both services through handlers.
 
 ## Ghostty
 
@@ -138,24 +176,56 @@ Installs Ghostty (tip/development build) and syncs config from dotfiles if `dotf
 
 Installs `neovim` via Homebrew. Config is managed via dotfiles.
 
-## GPG
+## Commit signing
 
-The `dev-tools` role installs `gnupg` and `pinentry-mac`, and configures `~/.gnupg/gpg-agent.conf` automatically.
+The `dev-tools` role installs `gnupg` and `pinentry-mac` and writes
+`~/.gnupg/gpg-agent.conf`, so GPG signing works if you already carry a key.
 
-To generate a key and add it to GitHub:
+If you keep your SSH keys in an agent (1Password, Bitwarden, `ssh-agent`), SSH
+signing is less work than maintaining a GPG keyring — git has supported it since
+2.34 and there is no key material on disk:
+
+```ini
+# ~/.gitconfig-personal
+[user]
+    email = <id>+<user>@users.noreply.github.com
+    signingkey = key::ssh-ed25519 AAAA...
+[gpg]
+    format = ssh
+[commit]
+    gpgsign = true
+```
+
+The `key::` prefix means "this is the key itself", not a path — git hands the
+public key to the agent, which signs with the private half. Register the *same*
+public key on GitHub a second time under Settings → SSH and GPG keys, with key
+type **Signing Key**; a key registered only for authentication will not verify
+signatures.
+
+`git log --show-signature` reports `No signature` until you also point
+`gpg.ssh.allowedSignersFile` at a file mapping emails to keys. That is a local
+verification concern only — GitHub verifies against the keys on your account.
+
+## Manual steps
+
+The playbook cannot automate these:
+
+| Step | Why |
+|------|-----|
+| Raycast hotkey (Settings → General) | stored in an encrypted internal database |
+| Register the signing key on GitHub | account-side, needs your session |
+| Fill in `~/.gitconfig-work` | the repo ships a redacted placeholder; `force: false` keeps your local value |
+| Approve system extensions | Logitech and similar installers need Privacy & Security approval |
+
+## Development
+
+Lint and validate before pushing — CI runs the same three checks:
 
 ```bash
-# Generate key (RSA 4096, no expiry)
-gpg --full-generate-key
-
-# Get the key ID
-gpg --list-secret-keys --keyid-format=long
-
-# Export public key and add to GitHub → Settings → SSH and GPG keys
-gpg --armor --export <KEY_ID>
-
-# Configure git to sign commits
-git config --global user.signingkey <KEY_ID>
-git config --global commit.gpgsign true
-echo 'export GPG_TTY=$(tty)' >> ~/.zshrc
+yamllint .
+ansible-lint
+ansible-playbook --syntax-check daily-driver.yml
 ```
+
+`.ansible-lint` carries a `skip_list` of rules that are deliberately deferred
+rather than disabled; each entry is commented with what it covers.
