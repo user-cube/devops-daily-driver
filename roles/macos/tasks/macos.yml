@@ -169,6 +169,7 @@
         echo disabled
       register: spotlight_hotkeys
       changed_when: false
+      check_mode: false
 
     - name: Disable Spotlight shortcuts to free ⌘Space for Raycast
       ansible.builtin.shell: |

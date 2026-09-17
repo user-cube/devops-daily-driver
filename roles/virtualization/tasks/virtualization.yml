@@ -16,6 +16,7 @@
   register: colima_status
   changed_when: false
   failed_when: false
+  check_mode: false
   tags:
     - virtualization
     - colima
@@ -33,6 +34,7 @@
     url: https://api.github.com/repos/docker/buildx/releases/latest
     return_content: true
   register: github_release
+  check_mode: false
 
 - name: Set latest version and download URL for macOS ARM64
   set_fact:
