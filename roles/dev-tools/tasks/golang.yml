@@ -1,3 +1,4 @@
+---
 - name: Install golang
   community.general.homebrew:
     name: go

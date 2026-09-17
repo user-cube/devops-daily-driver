@@ -1,3 +1,4 @@
+---
 - name: Install Containerization tools
   community.general.homebrew:
     name:
@@ -10,16 +11,27 @@
       - hadolint
     state: present
 
-- name: Setup Colima
-  command: colima start --vm-type=vz --vz-rosetta --memory 8 work
+- name: Check whether the Colima 'work' profile is running
+  ansible.builtin.command: colima status work
+  register: colima_status
+  changed_when: false
+  failed_when: false
   tags:
-  - virtualization
-  - colima
+    - virtualization
+    - colima
+
+- name: Setup Colima
+  ansible.builtin.command: colima start --vm-type=vz --vz-rosetta --memory 8 work
+  when: colima_status.rc != 0
+  changed_when: true
+  tags:
+    - virtualization
+    - colima
 
 - name: Get latest release from GitHub API
   uri:
     url: https://api.github.com/repos/docker/buildx/releases/latest
-    return_content: yes
+    return_content: true
   register: github_release
 
 - name: Set latest version and download URL for macOS ARM64
@@ -32,8 +44,8 @@
         | list
         | first }}
   tags:
-  - virtualization
-  - docker-buildx
+    - virtualization
+    - docker-buildx
 
 - name: Create Docker CLI plugin directory
   file:
@@ -41,8 +53,8 @@
     state: directory
     mode: '0755'
   tags:
-  - virtualization
-  - docker-buildx
+    - virtualization
+    - docker-buildx
 
 - name: Download Docker Buildx binary for macOS ARM64
   get_url:
@@ -50,8 +62,8 @@
     dest: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins/docker-buildx"
     mode: '0755'
   tags:
-  - virtualization
-  - docker-buildx
+    - virtualization
+    - docker-buildx
 
 - name: LazyDocker
   community.general.homebrew:

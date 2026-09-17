@@ -1,0 +1,18 @@
+---
+exclude_paths:
+  - .ansible/
+
+# Rules deferred rather than disabled. Each is a real cleanup, but mechanical
+# and wide-reaching, so they are kept out of CI until tackled deliberately:
+#   fqcn[action-core]        26 bare module names (command, uri, file, ...)
+#   var-naming[no-role-prefix] 28 role vars without their role prefix
+#   name[missing]            21 unnamed import_tasks blocks
+#   latest[git]               2 git checkouts without an explicit version
+#   role-name                 dev-tools / custom-tools use hyphens; renaming
+#                             them would touch the playbook and every tag
+skip_list:
+  - role-name
+  - fqcn[action-core]
+  - var-naming[no-role-prefix]
+  - name[missing]
+  - latest[git]

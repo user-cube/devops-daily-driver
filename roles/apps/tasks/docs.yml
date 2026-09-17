@@ -1,3 +1,4 @@
+---
 - name: Documentation tools
   community.general.homebrew:
     name: markdown-toc

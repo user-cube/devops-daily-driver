@@ -1,3 +1,4 @@
+---
 - name: Install Oh My Zsh
   ansible.builtin.shell: |
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended --keep-zshrc
@@ -37,8 +38,10 @@
 
 - name: Install nvm
   ansible.builtin.shell: |
+    set -o pipefail
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
   args:
+    executable: /bin/bash
     creates: "{{ lookup('env', 'HOME') }}/.nvm/nvm.sh"
   tags:
     - install

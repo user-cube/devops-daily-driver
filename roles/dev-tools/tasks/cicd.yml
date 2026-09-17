@@ -1,3 +1,4 @@
+---
 - name: Install CICD tools
   community.general.homebrew:
     name:

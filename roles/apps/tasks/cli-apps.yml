@@ -1,3 +1,4 @@
+---
 - name: Tap repositories for laptop configuration tools
   community.general.homebrew_tap:
     name:
@@ -43,6 +44,43 @@
     state: present
   notify:
     - Start skhd-zig
+  tags:
+    - install
+    - cli-apps
+
+# The Start handlers only fire when the install task reports a change, so on a
+# machine where yabai/skhd are already installed nothing ever starts them.
+# These tasks make "running" the desired state rather than a side effect.
+- name: Check whether yabai is running
+  ansible.builtin.command: pgrep -x yabai
+  register: yabai_running
+  changed_when: false
+  failed_when: false
+  tags:
+    - install
+    - cli-apps
+
+- name: Start yabai service
+  ansible.builtin.command: yabai --start-service
+  when: yabai_running.rc != 0
+  changed_when: true
+  tags:
+    - install
+    - cli-apps
+
+- name: Check whether skhd is running
+  ansible.builtin.command: pgrep -x skhd
+  register: skhd_running
+  changed_when: false
+  failed_when: false
+  tags:
+    - install
+    - cli-apps
+
+- name: Start skhd service
+  ansible.builtin.command: skhd --start-service
+  when: skhd_running.rc != 0
+  changed_when: true
   tags:
     - install
     - cli-apps

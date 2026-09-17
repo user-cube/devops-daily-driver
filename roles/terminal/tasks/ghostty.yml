@@ -33,7 +33,7 @@
   ansible.posix.synchronize:
     src: "{{ dotfiles_dest }}/.config/ghostty/"
     dest: "{{ home_dir }}/.config/ghostty/"
-    delete: no
+    delete: false
   when: ghostty_config_src.stat.exists | default(false) and ghostty_config_src.stat.isdir | default(false)
   tags:
     - install

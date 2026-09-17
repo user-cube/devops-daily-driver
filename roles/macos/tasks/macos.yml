@@ -156,6 +156,20 @@
         type: bool
         value: true
 
+    # Only rewrite the hotkeys when at least one of them is still enabled,
+    # otherwise these two tasks report "changed" on every single run.
+    - name: Check whether Spotlight shortcuts are already disabled
+      ansible.builtin.shell: |
+        p=~/Library/Preferences/com.apple.symbolichotkeys.plist
+        for k in 60 61 64 65; do
+          v=$(/usr/libexec/PlistBuddy -c "Print :AppleSymbolicHotKeys:$k:enabled" \
+                "$p" 2>/dev/null)
+          [ "$v" = "false" ] || { echo enabled; exit 0; }
+        done
+        echo disabled
+      register: spotlight_hotkeys
+      changed_when: false
+
     - name: Disable Spotlight shortcuts to free ⌘Space for Raycast
       ansible.builtin.shell: |
         defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 60 "
@@ -190,10 +204,12 @@
               <key>type</key><string>standard</string>
             </dict>
           </dict>"
+      when: spotlight_hotkeys.stdout == "enabled"
       changed_when: true
 
     - name: Apply Spotlight shortcut changes
       ansible.builtin.command: /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+      when: spotlight_hotkeys.stdout == "enabled"
       changed_when: true
 
     # Siri's shortcut defaults to holding ⌘Space and swallows the keystroke

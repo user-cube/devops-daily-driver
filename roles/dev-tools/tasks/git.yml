@@ -1,3 +1,4 @@
+---
 - name: Install git tools
   community.general.homebrew:
     name:

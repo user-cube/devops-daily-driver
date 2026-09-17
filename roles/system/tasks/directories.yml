@@ -1,3 +1,4 @@
+---
 - name: Create home directories
   ansible.builtin.file:
     path: "{{ home_dir }}/{{ item }}"

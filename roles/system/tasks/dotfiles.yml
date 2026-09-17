@@ -3,7 +3,7 @@
   ansible.builtin.git:
     repo: "{{ dotfiles_repo }}"
     dest: "{{ dotfiles_dest }}"
-    update: yes
+    update: true
   tags:
     - dotfiles
     - install
@@ -21,7 +21,7 @@
   ansible.posix.synchronize:
     src: "{{ dotfiles_dest }}/.config/"
     dest: "{{ home_dir }}/.config/"
-    delete: no
+    delete: false
   tags:
     - dotfiles
     - install
@@ -30,7 +30,7 @@
   ansible.posix.synchronize:
     src: "{{ dotfiles_dest }}/.config_macos/"
     dest: "{{ home_dir }}/.config/"
-    delete: no
+    delete: false
   notify:
     - Restart Yabai
     - Restart skhd-zig
@@ -42,7 +42,8 @@
   ansible.builtin.copy:
     src: "{{ dotfiles_dest }}/.zshrc_macos"
     dest: "{{ home_dir }}/.zshrc"
-    remote_src: yes
+    remote_src: true
+    mode: "0644"
   tags:
     - dotfiles
     - install
@@ -51,7 +52,8 @@
   ansible.builtin.copy:
     src: "{{ dotfiles_dest }}/.p10k.zsh"
     dest: "{{ home_dir }}/.p10k.zsh"
-    remote_src: yes
+    remote_src: true
+    mode: "0644"
   tags:
     - dotfiles
     - install
@@ -60,7 +62,7 @@
   ansible.posix.synchronize:
     src: "{{ dotfiles_dest }}/git_hooks/"
     dest: "{{ home_dir }}/git_hooks/"
-    delete: no
+    delete: false
   tags:
     - dotfiles
     - install
@@ -84,7 +86,8 @@
   ansible.builtin.copy:
     src: "{{ dotfiles_dest }}/{{ item.item }}"
     dest: "{{ home_dir }}/{{ item.item }}"
-    remote_src: yes
+    remote_src: true
+    mode: "0644"
     force: "{{ item.item != '.gitconfig-work' }}"
   loop: "{{ gitconfig_files_check.results }}"
   when: item.stat.exists | default(false)

@@ -1,3 +1,4 @@
+---
 - name: Install tools for demo
   community.general.homebrew:
     name:

@@ -1,3 +1,4 @@
+---
 - name: Ensure fonts directory exists
   ansible.builtin.file:
     path: "{{ fonts_dest_dir }}"
@@ -11,6 +12,7 @@
   ansible.builtin.get_url:
     url: "{{ fonts_base_url }}/{{ item | replace(' ', '%20') }}"
     dest: "{{ fonts_dest_dir }}/{{ item }}"
+    mode: "0644"
   loop: "{{ fonts_meslo_files }}"
   tags:
     - install
