@@ -41,3 +41,12 @@
     - install
     - gh-cli
     - git-tools
+
+- name: Install GitLab CLI
+  community.general.homebrew:
+    name: glab
+    state: present
+  tags:
+    - install
+    - glab
+    - git-tools
