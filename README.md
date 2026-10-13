@@ -182,10 +182,10 @@ highlights the focused window; its config lives in dotfiles `.config_macos/borde
 
 [SketchyBar](https://github.com/FelixKratz/SketchyBar) (`FelixKratz/formulae/sketchybar`) is a
 bottom status bar: AeroSpace workspaces with app icons, focused app, Spotify, kube
-context (red for prod), Colima profiles, GitHub/GitLab reviews, CPU, volume, battery
-and outdated Homebrew packages. Config lives in dotfiles `.config_macos/sketchybar/`;
+context (red for prod), Colima profiles, GitHub/GitLab reviews, AWS/GCP sessions,
+CPU, RAM, volume, battery and outdated Homebrew packages. Config lives in dotfiles `.config_macos/sketchybar/`;
 fonts (`font-sketchybar-app-font`, `font-sf-pro`) are installed by the `fonts` tag.
-The GitLab item stays hidden until `glab auth login` is done.
+The GitLab, AWS and GCP items stay hidden until their CLI is logged in.
 
 ## Ghostty
 
