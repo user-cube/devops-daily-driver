@@ -84,6 +84,13 @@ ansible-playbook daily-driver.yml --tags cli-apps
 
 # Only dotfiles
 ansible-playbook daily-driver.yml --tags dotfiles
+
+# Only the AeroSpace setup (WM, borders, SketchyBar, fonts, macOS tweaks, dotfiles,
+# then the interactive permissions guide)
+ansible-playbook daily-driver.yml --tags aerospace
+
+# Only the permissions guide (e.g. after `brew upgrade sketchybar`)
+ansible-playbook daily-driver.yml --tags permissions
 ```
 
 Tags come in two layers. **Role and area tags** are the ones you normally reach
@@ -95,7 +102,11 @@ for:
 `cicd`, `kubernetes`, `cluster-visualization`, `iac`, `terraform`, `opentofu`,
 `secrets`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
 `terminal`, `ghostty`, `zsh`, `pyenv`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
-`gcp`, `custom-tools`, `demo`.
+`gcp`, `custom-tools`, `demo`, `menubar`.
+
+**Feature tags** cut across roles: `aerospace` runs everything for the window
+manager setup (AeroSpace, borders, SketchyBar, its fonts, macOS Spaces/menu bar
+tweaks, dotfiles sync) and ends with the interactive `permissions` guide.
 
 Individual packages also carry their own tag (`bat`, `jq`, `htop`, `k9s`, …), so
 you can install a single tool without running its whole role:
@@ -253,6 +264,22 @@ it one click instead of reconfiguring extension by extension.
 > extension credentials, so secret scanners like gitleaks will not catch them.
 > Store it in a password manager or private location. Raycast Pro's Cloud Sync
 > (`requiresPro`) removes the need for the file entirely.
+
+## Privacy permissions (AeroSpace setup)
+
+macOS only lets the user grant these. `--tags permissions` (also part of
+`--tags aerospace`, never part of a full run) opens the right pane, reveals the
+sketchybar binary in Finder and waits for Enter.
+
+| Where (System Settings → Privacy & Security) | App | Why |
+|---|---|---|
+| Accessibility | AeroSpace (`/Applications/AeroSpace.app`) | move and tile windows |
+| Accessibility | sketchybar (`/opt/homebrew/Cellar/sketchybar/<version>/bin/sketchybar`) | read Slack/Discord Dock badges |
+| Automation → System Events | sketchybar (prompted on first use) | Dock badges |
+| Automation → Spotify | sketchybar (prompted on first use) | play/pause |
+
+**After `brew upgrade sketchybar`** the Cellar path changes and the Accessibility
+grant is lost (badges turn grey): remove the old entry and run `--tags permissions`.
 
 ## Manual steps
 

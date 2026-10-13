@@ -7,6 +7,7 @@
   tags:
     - dotfiles
     - install
+    - aerospace
 
 - name: Ensure ~/.config exists
   ansible.builtin.file:
@@ -16,6 +17,7 @@
   tags:
     - dotfiles
     - install
+    - aerospace
 
 - name: Sync dotfiles .config to ~/.config
   ansible.posix.synchronize:
@@ -25,6 +27,7 @@
   tags:
     - dotfiles
     - install
+    - aerospace
 
 - name: Sync dotfiles .config_macos to ~/.config
   ansible.posix.synchronize:
@@ -40,6 +43,7 @@
   tags:
     - dotfiles
     - install
+    - aerospace
 
 - name: Copy .zshrc_macos to ~/.zshrc
   ansible.builtin.copy:

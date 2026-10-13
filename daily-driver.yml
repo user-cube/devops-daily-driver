@@ -76,3 +76,16 @@
       tags:
         - custom-tools
         - demo
+
+  # Runs after every role so AeroSpace and sketchybar are already installed.
+  # Interactive (waits for Enter), so it only runs when asked for explicitly:
+  #   --tags permissions   or   --tags aerospace
+  post_tasks:
+    - name: Guide through privacy permissions (Accessibility, Automation)
+      ansible.builtin.import_role:
+        name: macos
+        tasks_from: permissions
+      tags:
+        - never
+        - aerospace
+        - permissions

@@ -1,0 +1,41 @@
+---
+# Privacy permissions can't be granted from a script (TCC needs the user), so
+# this opens the right panes, reveals the binaries and waits for confirmation.
+# Re-run after `brew upgrade sketchybar`: the permission is tied to the exact
+# binary (/opt/homebrew/Cellar/sketchybar/<version>/...), so upgrades drop it.
+#   ansible-playbook daily-driver.yml --tags permissions
+- name: Resolve the sketchybar binary path
+  ansible.builtin.command: realpath /opt/homebrew/bin/sketchybar
+  register: sketchybar_bin
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
+- name: Open Privacy & Security → Accessibility
+  ansible.builtin.command: open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+  changed_when: false
+
+- name: Reveal the sketchybar binary in Finder
+  ansible.builtin.command: open -R "{{ sketchybar_bin.stdout }}"
+  when: sketchybar_bin.rc == 0
+  changed_when: false
+
+- name: Wait for Accessibility to be granted
+  ansible.builtin.pause:
+    prompt: |
+
+      In Privacy & Security → Accessibility, enable:
+        • AeroSpace       (/Applications/AeroSpace.app) — moves and tiles windows
+        • sketchybar      ({{ sketchybar_bin.stdout | default('not installed') }})
+                          drag it from the Finder window into the list — reads Slack/Discord Dock badges
+
+      When sketchybar is reloaded next, macOS asks for Automation:
+        • "sketchybar wants to control System Events" → OK   (Dock badges)
+        • "sketchybar wants to control Spotify" → OK         (play/pause)
+
+      Press Enter when done
+
+- name: Reload sketchybar to trigger the Automation prompts
+  ansible.builtin.command: sketchybar --reload
+  changed_when: false
+  failed_when: false

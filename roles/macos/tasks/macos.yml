@@ -71,10 +71,12 @@
         key: mru-spaces
         type: bool
         value: false
+      tags: [aerospace]
 
     - name: Restart Dock to apply changes
       ansible.builtin.command: killall Dock
       changed_when: true
+      tags: [aerospace]
 
 - name: Configure macOS Menu Bar
   tags: macos, menubar
@@ -87,6 +89,7 @@
         type: int
         value: 18
       notify: Restart Control Center
+      tags: [aerospace]
 
 - name: Configure macOS Finder
   tags: macos, finder
@@ -240,6 +243,7 @@
       changed_when: false
       check_mode: false
       when: window_manager == 'aerospace'
+      tags: [aerospace]
 
     - name: Disable Mission Control ctrl ←/→ to free them for AeroSpace
       ansible.builtin.shell: |
@@ -261,13 +265,15 @@
           </dict>"
       when: window_manager == 'aerospace' and mission_control_hotkeys.stdout == "enabled"
       changed_when: true
+      tags: [aerospace]
 
     - name: Apply shortcut changes
       ansible.builtin.command: /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
       when: >-
-        spotlight_hotkeys.stdout == "enabled" or
-        (window_manager == 'aerospace' and mission_control_hotkeys.stdout == "enabled")
+        (spotlight_hotkeys.stdout | default('')) == "enabled" or
+        (window_manager == 'aerospace' and (mission_control_hotkeys.stdout | default('')) == "enabled")
       changed_when: true
+      tags: [aerospace]
 
     # Siri's shortcut defaults to holding ⌘Space and swallows the keystroke
     # before any app sees it. Disabling Siri frees it for Raycast.

@@ -57,6 +57,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Install skhd-zig
   community.general.homebrew_cask:
@@ -120,6 +121,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Start AeroSpace
   ansible.builtin.command: open -a AeroSpace
@@ -128,6 +130,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Tap FelixKratz formulae (JankyBorders, SketchyBar)
   community.general.homebrew_tap:
@@ -136,6 +139,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Trust borders and sketchybar from FelixKratz tap
   ansible.builtin.command: brew trust --formula felixkratz/formulae/{{ item }}
@@ -145,6 +149,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Install borders (focused window highlight) and sketchybar (status bar)
   community.general.homebrew:
@@ -153,6 +158,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Check whether borders and sketchybar are running
   ansible.builtin.command: pgrep -x {{ item }}
@@ -164,6 +170,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Start borders and sketchybar services
   ansible.builtin.command: brew services start {{ item.item }}
@@ -175,6 +182,7 @@
   tags:
     - install
     - cli-apps
+    - aerospace
 
 - name: Install text interaction tools
   community.general.homebrew:
