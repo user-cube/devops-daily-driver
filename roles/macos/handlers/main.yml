@@ -1,0 +1,4 @@
+---
+- name: Restart Control Center
+  ansible.builtin.command: killall ControlCenter
+  changed_when: true

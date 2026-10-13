@@ -157,6 +157,7 @@ Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` and 
 The `macos` role configures:
 - **Dock** — size, position (right), magnification, animation, indicators
 - **Finder** — extensions, hidden files, path bar, status bar, column view
+- **Menu bar** — Sound always shown
 - **Spaces** — no automatic rearranging of Spaces
 - **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled; with AeroSpace, Mission Control ctrl ←/→ disabled
 
@@ -181,9 +182,9 @@ reloads it through handlers.
 highlights the focused window; its config lives in dotfiles `.config_macos/borders/bordersrc`.
 
 [SketchyBar](https://github.com/FelixKratz/SketchyBar) (`FelixKratz/formulae/sketchybar`) is a
-bottom status bar: AeroSpace workspaces with app icons, focused app, Spotify, kube
+bottom status bar: AeroSpace workspaces with app icons, focused app, Spotify, Slack, kube
 context (red for prod), Colima profiles, GitHub/GitLab reviews, AWS/GCP sessions,
-CPU, RAM, volume, battery and outdated Homebrew packages. Config lives in dotfiles `.config_macos/sketchybar/`;
+CPU, RAM, weather and outdated Homebrew packages. Config lives in dotfiles `.config_macos/sketchybar/`;
 fonts (`font-sketchybar-app-font`, `font-sf-pro`) are installed by the `fonts` tag.
 The GitLab, AWS and GCP items stay hidden until their CLI is logged in.
 

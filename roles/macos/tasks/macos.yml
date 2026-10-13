@@ -76,6 +76,18 @@
       ansible.builtin.command: killall Dock
       changed_when: true
 
+- name: Configure macOS Menu Bar
+  tags: macos, menubar
+  block:
+    - name: Always show Sound in the menu bar
+      community.general.osx_defaults:
+        domain: com.apple.controlcenter
+        host: currentHost
+        key: Sound
+        type: int
+        value: 18
+      notify: Restart Control Center
+
 - name: Configure macOS Finder
   tags: macos, finder
   block:
