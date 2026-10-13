@@ -1,0 +1,5 @@
+---
+# FelixKratz/formulae tools, managed as Homebrew services
+felixkratz_tools:
+  - borders
+  - sketchybar

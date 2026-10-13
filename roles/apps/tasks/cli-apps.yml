@@ -129,7 +129,7 @@
     - install
     - cli-apps
 
-- name: Tap FelixKratz formulae (JankyBorders)
+- name: Tap FelixKratz formulae (JankyBorders, SketchyBar)
   community.general.homebrew_tap:
     name: FelixKratz/formulae
     state: present
@@ -137,25 +137,27 @@
     - install
     - cli-apps
 
-- name: Trust borders from FelixKratz tap
-  ansible.builtin.command: brew trust --formula felixkratz/formulae/borders
-  register: borders_trust
-  changed_when: "'Trusted ' in borders_trust.stdout"
+- name: Trust borders and sketchybar from FelixKratz tap
+  ansible.builtin.command: brew trust --formula felixkratz/formulae/{{ item }}
+  loop: "{{ felixkratz_tools }}"
+  register: felixkratz_trust
+  changed_when: "'Trusted ' in felixkratz_trust.stdout"
   tags:
     - install
     - cli-apps
 
-- name: Install borders (focused window highlight)
+- name: Install borders (focused window highlight) and sketchybar (status bar)
   community.general.homebrew:
-    name: felixkratz/formulae/borders
+    name: "{{ felixkratz_tools | map('regex_replace', '^', 'felixkratz/formulae/') | list }}"
     state: present
   tags:
     - install
     - cli-apps
 
-- name: Check whether borders is running
-  ansible.builtin.command: pgrep -x borders
-  register: borders_running
+- name: Check whether borders and sketchybar are running
+  ansible.builtin.command: pgrep -x {{ item }}
+  loop: "{{ felixkratz_tools }}"
+  register: felixkratz_running
   changed_when: false
   failed_when: false
   check_mode: false
@@ -163,9 +165,12 @@
     - install
     - cli-apps
 
-- name: Start borders service
-  ansible.builtin.command: brew services start borders
-  when: borders_running.rc != 0
+- name: Start borders and sketchybar services
+  ansible.builtin.command: brew services start {{ item.item }}
+  loop: "{{ felixkratz_running.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: item.rc != 0
   changed_when: true
   tags:
     - install

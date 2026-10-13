@@ -36,6 +36,7 @@
     - Restart skhd-zig
     - Reload AeroSpace
     - Restart borders
+    - Reload sketchybar
   tags:
     - dotfiles
     - install

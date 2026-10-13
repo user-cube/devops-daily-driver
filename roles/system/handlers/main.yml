@@ -22,3 +22,8 @@
   ansible.builtin.command: brew services restart borders
   changed_when: true
   failed_when: false
+
+- name: Reload sketchybar
+  ansible.builtin.command: sketchybar --reload
+  changed_when: true
+  failed_when: false

@@ -180,6 +180,13 @@ reloads it through handlers.
 [JankyBorders](https://github.com/FelixKratz/JankyBorders) (`FelixKratz/formulae/borders`)
 highlights the focused window; its config lives in dotfiles `.config_macos/borders/bordersrc`.
 
+[SketchyBar](https://github.com/FelixKratz/SketchyBar) (`FelixKratz/formulae/sketchybar`) is a
+bottom status bar: AeroSpace workspaces with app icons, focused app, Spotify, kube
+context (red for prod), Colima profiles, GitHub/GitLab reviews, CPU, volume, battery
+and outdated Homebrew packages. Config lives in dotfiles `.config_macos/sketchybar/`;
+fonts (`font-sketchybar-app-font`, `font-sf-pro`) are installed by the `fonts` tag.
+The GitLab item stays hidden until `glab auth login` is done.
+
 ## Ghostty
 
 Installs Ghostty (tip/development build) and syncs config from dotfiles if `dotfiles/.config/ghostty/` exists.

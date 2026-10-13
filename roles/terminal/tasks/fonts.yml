@@ -25,3 +25,13 @@
   tags:
     - install
     - fonts
+
+- name: Install SketchyBar fonts (app icons, SF Pro)
+  community.general.homebrew_cask:
+    name:
+      - font-sketchybar-app-font
+      - font-sf-pro
+    state: present
+  tags:
+    - install
+    - fonts
