@@ -4,8 +4,16 @@
     if yabai --restart-service 2>/dev/null; then echo restarted; else yabai --start-service && echo started; fi
   changed_when: true
   failed_when: false
+  when: window_manager == 'yabai'
 
 - name: Restart skhd-zig
   ansible.builtin.command: skhd --restart-service
   changed_when: true
   failed_when: false
+  when: window_manager == 'yabai'
+
+- name: Reload AeroSpace
+  ansible.builtin.command: aerospace reload-config
+  changed_when: true
+  failed_when: false
+  when: window_manager == 'aerospace'

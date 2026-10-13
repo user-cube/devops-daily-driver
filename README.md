@@ -116,6 +116,9 @@ install_aws: true
 install_azure: false
 install_gcp: false
 
+# Window manager — aerospace or yabai (yabai also installs skhd-zig)
+window_manager: aerospace
+
 # Dotfiles
 dotfiles_repo: "https://github.com/your-user/dotfiles.git"
 
@@ -147,26 +150,32 @@ ansible-playbook daily-driver.yml --tags aws -e install_aws=true
 
 ## Dotfiles
 
-Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` and `.config_macos` to `~/.config`, copies `.zshrc_macos` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config_macos` triggers a restart of Yabai and skhd-zig.
+Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` and `.config_macos` to `~/.config`, copies `.zshrc_macos` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config_macos` reloads the selected window manager (AeroSpace, or Yabai and skhd-zig).
 
 ## macOS settings
 
 The `macos` role configures:
 - **Dock** — size, position (right), magnification, animation, indicators
 - **Finder** — extensions, hidden files, path bar, status bar, column view
-- **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled
+- **Spaces** — no automatic rearranging of Spaces
+- **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled; with AeroSpace, Mission Control ctrl ←/→ disabled
 
   Both Spotlight and Siri bind ⌘Space; Siri's default is *hold* ⌘Space, which
   swallows the keystroke before any app sees it. The playbook frees the shortcut
   but **cannot set Raycast's hotkey** — Raycast keeps it in an encrypted internal
   database with no supported `defaults` key. See [Manual steps](#manual-steps).
 
-## Services (Yabai, skhd-zig)
+## Window manager (AeroSpace or Yabai)
 
-The `cli-apps` tasks check with `pgrep` whether each service is running and start
-it if not, so "running" is the desired state rather than a side effect of the
-install task firing a handler. Syncing dotfiles `.config_macos` still triggers a
-restart of both services through handlers.
+Set `window_manager` in `host_vars/localhost.yml`:
+
+- `aerospace` (default) — installs AeroSpace (`nikitabobko/tap/aerospace`). Config and cheat sheet live in dotfiles `.config_macos/aerospace/`.
+- `yabai` — installs Yabai and skhd-zig.
+
+The `cli-apps` tasks check with `pgrep` whether the selected window manager is
+running and start it if not, so "running" is the desired state rather than a side
+effect of the install task firing a handler. Syncing dotfiles `.config_macos`
+reloads it through handlers.
 
 ## Ghostty
 
@@ -244,6 +253,9 @@ The playbook cannot automate these:
 | Register the signing key on GitHub | account-side, needs your session |
 | Fill in `~/.gitconfig-work` | the repo ships a redacted placeholder; `force: false` keeps your local value |
 | Approve system extensions | Logitech and similar installers need Privacy & Security approval |
+| AeroSpace Accessibility permission | TCC prompt, needs user approval |
+| Keep a single macOS Desktop | AeroSpace only manages windows on the current Space |
+| Firefox `full-screen-api.macos-native-full-screen = false` | `about:config`, per profile; avoids fullscreen video creating its own Space |
 
 ## Development
 

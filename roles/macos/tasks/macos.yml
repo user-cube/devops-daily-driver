@@ -65,6 +65,13 @@
         type: bool
         value: false
 
+    - name: Disable automatically rearranging Spaces (keeps AeroSpace stable)
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: mru-spaces
+        type: bool
+        value: false
+
     - name: Restart Dock to apply changes
       ansible.builtin.command: killall Dock
       changed_when: true
@@ -208,9 +215,46 @@
       when: spotlight_hotkeys.stdout == "enabled"
       changed_when: true
 
-    - name: Apply Spotlight shortcut changes
+    - name: Check whether Mission Control ctrl ←/→ are already disabled
+      ansible.builtin.shell: |
+        p=~/Library/Preferences/com.apple.symbolichotkeys.plist
+        for k in 79 81; do
+          v=$(/usr/libexec/PlistBuddy -c "Print :AppleSymbolicHotKeys:$k:enabled" \
+                "$p" 2>/dev/null)
+          [ "$v" = "false" ] || { echo enabled; exit 0; }
+        done
+        echo disabled
+      register: mission_control_hotkeys
+      changed_when: false
+      check_mode: false
+      when: window_manager == 'aerospace'
+
+    - name: Disable Mission Control ctrl ←/→ to free them for AeroSpace
+      ansible.builtin.shell: |
+        defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 79 "
+          <dict>
+            <key>enabled</key><false/>
+            <key>value</key><dict>
+              <key>parameters</key><array><integer>65535</integer><integer>123</integer><integer>8650752</integer></array>
+              <key>type</key><string>standard</string>
+            </dict>
+          </dict>"
+        defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 81 "
+          <dict>
+            <key>enabled</key><false/>
+            <key>value</key><dict>
+              <key>parameters</key><array><integer>65535</integer><integer>124</integer><integer>8650752</integer></array>
+              <key>type</key><string>standard</string>
+            </dict>
+          </dict>"
+      when: window_manager == 'aerospace' and mission_control_hotkeys.stdout == "enabled"
+      changed_when: true
+
+    - name: Apply shortcut changes
       ansible.builtin.command: /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-      when: spotlight_hotkeys.stdout == "enabled"
+      when: >-
+        spotlight_hotkeys.stdout == "enabled" or
+        (window_manager == 'aerospace' and mission_control_hotkeys.stdout == "enabled")
       changed_when: true
 
     # Siri's shortcut defaults to holding ⌘Space and swallows the keystroke
