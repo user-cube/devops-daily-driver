@@ -177,6 +177,9 @@ running and start it if not, so "running" is the desired state rather than a sid
 effect of the install task firing a handler. Syncing dotfiles `.config_macos`
 reloads it through handlers.
 
+[JankyBorders](https://github.com/FelixKratz/JankyBorders) (`FelixKratz/formulae/borders`)
+highlights the focused window; its config lives in dotfiles `.config_macos/borders/bordersrc`.
+
 ## Ghostty
 
 Installs Ghostty (tip/development build) and syncs config from dotfiles if `dotfiles/.config/ghostty/` exists.

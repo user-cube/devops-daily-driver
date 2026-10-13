@@ -129,6 +129,48 @@
     - install
     - cli-apps
 
+- name: Tap FelixKratz formulae (JankyBorders)
+  community.general.homebrew_tap:
+    name: FelixKratz/formulae
+    state: present
+  tags:
+    - install
+    - cli-apps
+
+- name: Trust borders from FelixKratz tap
+  ansible.builtin.command: brew trust --formula felixkratz/formulae/borders
+  register: borders_trust
+  changed_when: "'Trusted ' in borders_trust.stdout"
+  tags:
+    - install
+    - cli-apps
+
+- name: Install borders (focused window highlight)
+  community.general.homebrew:
+    name: felixkratz/formulae/borders
+    state: present
+  tags:
+    - install
+    - cli-apps
+
+- name: Check whether borders is running
+  ansible.builtin.command: pgrep -x borders
+  register: borders_running
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+    - install
+    - cli-apps
+
+- name: Start borders service
+  ansible.builtin.command: brew services start borders
+  when: borders_running.rc != 0
+  changed_when: true
+  tags:
+    - install
+    - cli-apps
+
 - name: Install text interaction tools
   community.general.homebrew:
     name:

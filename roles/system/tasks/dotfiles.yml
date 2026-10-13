@@ -35,6 +35,7 @@
     - Restart Yabai
     - Restart skhd-zig
     - Reload AeroSpace
+    - Restart borders
   tags:
     - dotfiles
     - install

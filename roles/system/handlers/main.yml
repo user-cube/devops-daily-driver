@@ -17,3 +17,8 @@
   changed_when: true
   failed_when: false
   when: window_manager == 'aerospace'
+
+- name: Restart borders
+  ansible.builtin.command: brew services restart borders
+  changed_when: true
+  failed_when: false
