@@ -158,7 +158,7 @@ ansible-playbook daily-driver.yml --tags aws -e install_aws=true
 
 ## Dotfiles
 
-Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` and `.config_macos` to `~/.config`, copies `.zshrc_macos` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config_macos` reloads AeroSpace, borders and SketchyBar.
+Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` to `~/.config`, copies `.zshrc` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config` reloads tmux, AeroSpace, borders and SketchyBar. Machine-specific shell config goes in `~/.zshrc.local` (never overwritten).
 
 ## macOS settings
 
@@ -177,18 +177,18 @@ The `macos` role configures:
 ## Window manager (AeroSpace)
 
 Installs [AeroSpace](https://github.com/nikitabobko/AeroSpace) (`nikitabobko/tap/aerospace`).
-Config and cheat sheet live in dotfiles `.config_macos/aerospace/`. The `cli-apps`
+Config and cheat sheet live in dotfiles `.config/aerospace/`. The `cli-apps`
 tasks check with `pgrep` whether it is running and start it if not, so "running"
 is the desired state rather than a side effect of the install task. Syncing
-dotfiles `.config_macos` reloads it through handlers.
+dotfiles `.config` reloads it through handlers.
 
 [JankyBorders](https://github.com/FelixKratz/JankyBorders) (`FelixKratz/formulae/borders`)
-highlights the focused window; its config lives in dotfiles `.config_macos/borders/bordersrc`.
+highlights the focused window; its config lives in dotfiles `.config/borders/bordersrc`.
 
 [SketchyBar](https://github.com/FelixKratz/SketchyBar) (`FelixKratz/formulae/sketchybar`) is a
 bottom status bar: AeroSpace workspaces with app icons, focused app, Spotify, Slack, kube
 context (red for prod), Colima profiles, GitHub/GitLab reviews, AWS/GCP sessions,
-CPU, RAM, weather and outdated Homebrew packages. Config lives in dotfiles `.config_macos/sketchybar/`;
+CPU, RAM, weather and outdated Homebrew packages. Config lives in dotfiles `.config/sketchybar/`;
 fonts (`font-sketchybar-app-font`, `font-sf-pro`, `font-hack-nerd-font`) are installed by the `fonts` and `aerospace` tags.
 The GitLab, AWS and GCP items stay hidden until their CLI is logged in.
 

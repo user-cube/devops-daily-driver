@@ -24,18 +24,8 @@
     src: "{{ dotfiles_dest }}/.config/"
     dest: "{{ home_dir }}/.config/"
     delete: false
-  notify: Reload tmux config
-  tags:
-    - dotfiles
-    - install
-    - aerospace
-
-- name: Sync dotfiles .config_macos to ~/.config
-  ansible.posix.synchronize:
-    src: "{{ dotfiles_dest }}/.config_macos/"
-    dest: "{{ home_dir }}/.config/"
-    delete: false
   notify:
+    - Reload tmux config
     - Reload AeroSpace
     - Restart borders
     - Reload sketchybar
@@ -44,9 +34,9 @@
     - install
     - aerospace
 
-- name: Copy .zshrc_macos to ~/.zshrc
+- name: Copy .zshrc to ~/.zshrc
   ansible.builtin.copy:
-    src: "{{ dotfiles_dest }}/.zshrc_macos"
+    src: "{{ dotfiles_dest }}/.zshrc"
     dest: "{{ home_dir }}/.zshrc"
     remote_src: true
     mode: "0644"
