@@ -18,6 +18,15 @@
     - cli-apps
     - aerospace
 
+- name: Install glow (renders the AeroSpace cheat sheet, alt-i)
+  community.general.homebrew:
+    name: glow
+    state: present
+  tags:
+    - install
+    - cli-apps
+    - aerospace
+
 # "Running" is the desired state, not a side effect of the install reporting a
 # change, so an already-installed AeroSpace is still started.
 - name: Check whether AeroSpace is running
