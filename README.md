@@ -158,7 +158,35 @@ ansible-playbook daily-driver.yml --tags aws -e install_aws=true
 
 ## Dotfiles
 
-Clones the repository defined in `host_vars/localhost.yml`, syncs `.config` to `~/.config`, copies `.zshrc` to `~/.zshrc`, and copies any of `.gitconfig`, `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config` reloads tmux, AeroSpace, borders and SketchyBar. Machine-specific shell config goes in `~/.zshrc.local` (never overwritten).
+Clones the repository defined in `host_vars/localhost.yml` (macOS only), syncs `.config` to
+`~/.config`, copies `.zshrc` and `.p10k.zsh` to `~`, and copies any of `.gitconfig`,
+`.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config` reloads tmux,
+AeroSpace, borders and SketchyBar.
+
+`~/.zshrc` is **overwritten** on every run. Anything specific to one machine (work-only
+tools, tokens, aliases) belongs in `~/.zshrc.local`, which `.zshrc` sources last and the
+playbook never touches. Shared shell functions live in dotfiles `.config/zsh/*.zsh` and
+are sourced automatically (e.g. `bw.zsh`, the Bitwarden CLI wrapper, which needs
+`export BW_USER=<email>` in `~/.zshrc.local`).
+
+Shell startup stays around 0.2 s: nvm loads on first use, `pyenv init` skips the rehash
+and tool completions are cached in `~/.cache/zsh` (regenerated when the tool is upgraded).
+
+Other per-machine files, also never overwritten:
+
+| File | Purpose |
+|---|---|
+| `~/.zshrc.local` | machine-specific shell config and secrets |
+| `~/.config/tmux/sessions.local` | repos preloaded as tmux sessions |
+| `~/.config/sketchybar/aws_profiles` | AWS profiles shown in SketchyBar |
+
+To update a machine without running Ansible:
+
+```bash
+git -C ~/dotfiles pull
+rsync -a ~/dotfiles/.config/ ~/.config/
+cp ~/dotfiles/.zshrc ~/.zshrc
+```
 
 ## macOS settings
 
@@ -188,7 +216,7 @@ highlights the focused window; its config lives in dotfiles `.config/borders/bor
 [SketchyBar](https://github.com/FelixKratz/SketchyBar) (`FelixKratz/formulae/sketchybar`) is a
 bottom status bar: AeroSpace workspaces with app icons, focused app, Spotify, Slack, kube
 context (red for prod), Colima profiles, GitHub/GitLab reviews, AWS/GCP sessions,
-CPU, RAM, weather and outdated Homebrew packages. Config lives in dotfiles `.config/sketchybar/`;
+Slack/Discord badges, CPU, RAM, weather and outdated Homebrew packages. Config lives in dotfiles `.config/sketchybar/`;
 fonts (`font-sketchybar-app-font`, `font-sf-pro`, `font-hack-nerd-font`) are installed by the `fonts` and `aerospace` tags.
 The GitLab, AWS and GCP items stay hidden until their CLI is logged in.
 
