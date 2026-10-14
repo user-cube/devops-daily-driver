@@ -19,6 +19,7 @@
   loop: "{{ tmux_plugins }}"
   loop_control:
     label: "{{ item.name }}"
+  notify: Reload tmux config
   tags:
     - install
     - terminal

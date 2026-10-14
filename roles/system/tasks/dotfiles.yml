@@ -24,6 +24,7 @@
     src: "{{ dotfiles_dest }}/.config/"
     dest: "{{ home_dir }}/.config/"
     delete: false
+  notify: Reload tmux config
   tags:
     - dotfiles
     - install

@@ -13,3 +13,13 @@
   ansible.builtin.command: sketchybar --reload
   changed_when: true
   failed_when: false
+
+# No-op when no tmux server is running (it reads the config on next start)
+- name: Reload tmux config
+  ansible.builtin.shell: |
+    if tmux list-sessions >/dev/null 2>&1; then
+      tmux source-file "$HOME/.config/tmux/tmux.conf" && echo reloaded
+    fi
+  register: tmux_reload
+  changed_when: "'reloaded' in tmux_reload.stdout"
+  failed_when: false
