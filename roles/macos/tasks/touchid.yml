@@ -1,0 +1,17 @@
+---
+# Touch ID for sudo. /etc/pam.d/sudo_local survives macOS updates (unlike
+# /etc/pam.d/sudo). Needs root: uses the sudo password prompted at the start of
+# the run and is skipped when it was left empty.
+- name: Enable Touch ID for sudo
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sudo_local
+    regexp: '^#?\s*auth\s+sufficient\s+pam_tid\.so'
+    line: "auth       sufficient     pam_tid.so"
+    create: true
+    owner: root
+    group: wheel
+    mode: "0444"
+  become: true
+  vars:
+    ansible_become_password: "{{ mac_sudo_password }}"
+  when: mac_sudo_password | default('') | length > 0

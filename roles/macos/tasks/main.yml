@@ -7,3 +7,9 @@
     - finder
     - keyboard
     - install
+
+- import_tasks: touchid.yml
+  tags:
+    - macos
+    - touchid
+    - install

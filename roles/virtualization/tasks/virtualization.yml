@@ -11,19 +11,21 @@
       - hadolint
     state: present
 
-- name: Check whether the Colima 'work' profile is running
-  ansible.builtin.command: colima status work
-  register: colima_status
-  changed_when: false
-  failed_when: false
-  check_mode: false
+# The 'work' profile is only created (first run); it is never started on later
+# runs, so a stopped VM stays stopped. Start it with `colima start work`.
+- name: Check whether the Colima 'work' profile exists
+  ansible.builtin.stat:
+    path: "{{ lookup('env', 'HOME') }}/.colima/_lima/colima-work"
+  register: colima_work_profile
   tags:
     - virtualization
     - colima
 
-- name: Setup Colima
-  ansible.builtin.command: colima start --vm-type=vz --vz-rosetta --memory 8 work
-  when: colima_status.rc != 0
+- name: Create the Colima 'work' profile (left stopped)
+  ansible.builtin.shell: |
+    colima start --vm-type=vz --vz-rosetta --memory 8 work
+    colima stop work
+  when: not colima_work_profile.stat.exists
   changed_when: true
   tags:
     - virtualization
