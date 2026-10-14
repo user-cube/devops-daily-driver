@@ -35,8 +35,6 @@
     dest: "{{ home_dir }}/.config/"
     delete: false
   notify:
-    - Restart Yabai
-    - Restart skhd-zig
     - Reload AeroSpace
     - Restart borders
     - Reload sketchybar

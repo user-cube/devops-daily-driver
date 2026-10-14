@@ -242,7 +242,6 @@
       register: mission_control_hotkeys
       changed_when: false
       check_mode: false
-      when: window_manager == 'aerospace'
       tags: [aerospace]
 
     - name: Disable Mission Control ctrl ←/→ to free them for AeroSpace
@@ -263,7 +262,7 @@
               <key>type</key><string>standard</string>
             </dict>
           </dict>"
-      when: window_manager == 'aerospace' and mission_control_hotkeys.stdout == "enabled"
+      when: mission_control_hotkeys.stdout == "enabled"
       changed_when: true
       tags: [aerospace]
 
@@ -271,7 +270,7 @@
       ansible.builtin.command: /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
       when: >-
         (spotlight_hotkeys.stdout | default('')) == "enabled" or
-        (window_manager == 'aerospace' and (mission_control_hotkeys.stdout | default('')) == "enabled")
+        (mission_control_hotkeys.stdout | default('')) == "enabled"
       changed_when: true
       tags: [aerospace]
 

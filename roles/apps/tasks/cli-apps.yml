@@ -1,33 +1,4 @@
 ---
-- name: Tap repositories for laptop configuration tools
-  community.general.homebrew_tap:
-    name:
-      - koekeishiya/formulae
-      - jackielii/tap
-    state: present
-  when: window_manager == 'yabai'
-  tags:
-    - install
-    - cli-apps
-
-- name: Trust yabai from koekeishiya tap
-  ansible.builtin.command: brew trust --formula koekeishiya/formulae/yabai
-  register: yabai_trust
-  changed_when: "'Trusted ' in yabai_trust.stdout"
-  when: window_manager == 'yabai'
-  tags:
-    - install
-    - cli-apps
-
-- name: Trust skhd-zig from jackielii tap
-  ansible.builtin.command: brew trust --cask jackielii/tap/skhd-zig
-  register: skhd_trust
-  changed_when: "'Trusted ' in skhd_trust.stdout"
-  when: window_manager == 'yabai'
-  tags:
-    - install
-    - cli-apps
-
 - name: Install laptop configuration tools
   community.general.homebrew:
     name:
@@ -38,86 +9,23 @@
     - install
     - cli-apps
 
-- name: Install yabai
-  community.general.homebrew:
-    name: koekeishiya/formulae/yabai
-    state: present
-  when: window_manager == 'yabai'
-  notify:
-    - Start Yabai
-  tags:
-    - install
-    - cli-apps
-
 - name: Install AeroSpace
   community.general.homebrew_cask:
     name: nikitabobko/tap/aerospace
     state: present
-  when: window_manager == 'aerospace'
   tags:
     - install
     - cli-apps
     - aerospace
 
-- name: Install skhd-zig
-  community.general.homebrew_cask:
-    name: jackielii/tap/skhd-zig
-    state: present
-  when: window_manager == 'yabai'
-  notify:
-    - Start skhd-zig
-  tags:
-    - install
-    - cli-apps
-
-# The Start handlers only fire when the install task reports a change, so on a
-# machine where the window manager is already installed nothing ever starts it.
-# These tasks make "running" the desired state rather than a side effect.
-- name: Check whether yabai is running
-  ansible.builtin.command: pgrep -x yabai
-  register: yabai_running
-  changed_when: false
-  failed_when: false
-  check_mode: false
-  when: window_manager == 'yabai'
-  tags:
-    - install
-    - cli-apps
-
-- name: Start yabai service
-  ansible.builtin.command: yabai --start-service
-  when: window_manager == 'yabai' and yabai_running.rc != 0
-  changed_when: true
-  tags:
-    - install
-    - cli-apps
-
-- name: Check whether skhd is running
-  ansible.builtin.command: pgrep -x skhd
-  register: skhd_running
-  changed_when: false
-  failed_when: false
-  check_mode: false
-  when: window_manager == 'yabai'
-  tags:
-    - install
-    - cli-apps
-
-- name: Start skhd service
-  ansible.builtin.command: skhd --start-service
-  when: window_manager == 'yabai' and skhd_running.rc != 0
-  changed_when: true
-  tags:
-    - install
-    - cli-apps
-
+# "Running" is the desired state, not a side effect of the install reporting a
+# change, so an already-installed AeroSpace is still started.
 - name: Check whether AeroSpace is running
   ansible.builtin.command: pgrep -x AeroSpace
   register: aerospace_running
   changed_when: false
   failed_when: false
   check_mode: false
-  when: window_manager == 'aerospace'
   tags:
     - install
     - cli-apps
@@ -125,7 +33,7 @@
 
 - name: Start AeroSpace
   ansible.builtin.command: open -a AeroSpace
-  when: window_manager == 'aerospace' and aerospace_running.rc != 0
+  when: aerospace_running.rc != 0
   changed_when: true
   tags:
     - install

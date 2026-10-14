@@ -4,9 +4,6 @@ install_aws: true
 install_azure: false
 install_gcp: false
 
-# Window manager — aerospace or yabai (yabai also installs skhd-zig)
-window_manager: aerospace
-
 # Dotfiles
 dotfiles_repo: "https://github.com/user-cube/dotfiles.git"
 

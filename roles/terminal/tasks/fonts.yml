@@ -26,11 +26,12 @@
     - install
     - fonts
 
-- name: Install SketchyBar fonts (app icons, SF Pro)
+- name: Install SketchyBar fonts (app icons, SF Pro, Hack Nerd Font for icons)
   community.general.homebrew_cask:
     name:
       - font-sketchybar-app-font
       - font-sf-pro
+      - font-hack-nerd-font
     state: present
   tags:
     - install
