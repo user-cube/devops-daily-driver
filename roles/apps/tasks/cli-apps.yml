@@ -18,9 +18,11 @@
     - cli-apps
     - aerospace
 
-- name: Install glow (renders the AeroSpace cheat sheet, alt-i)
+- name: Install glow (cheat sheet, alt-i) and lazygit (tmux popup, cmd-g)
   community.general.homebrew:
-    name: glow
+    name:
+      - glow
+      - lazygit
     state: present
   tags:
     - install

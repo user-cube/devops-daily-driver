@@ -201,7 +201,10 @@ Every Ghostty window starts inside **tmux** (`.config/ghostty/tmux-start.sh` in
 dotfiles): Ghostty's native tabs are separate macOS windows that AeroSpace tiles,
 so tabs, splits and sessions come from tmux instead, driven by the usual ⌘
 shortcuts (⌘T, ⌘⇧←/→, ⌘1–9, ⌘D, ⌘W, ⌘⇧S for sessions). The first window attaches
-the persistent `main` session; extra windows get throwaway sessions. Config:
+the persistent `main` session; extra windows get throwaway sessions. ⌘O opens any repo
+under `~/work` as a session, ⌘G opens lazygit in a popup. Sessions survive reboots
+via tmux-resurrect + tmux-continuum, vendored (pinned) in dotfiles
+`.config/tmux/plugins`. Config:
 dotfiles `.config/tmux/tmux.conf`. tmux is installed by the `terminal` and
 `aerospace` tags.
 
