@@ -9,3 +9,12 @@ fonts_meslo_files:
   - "MesloLGS NF Bold.ttf"
   - "MesloLGS NF Italic.ttf"
   - "MesloLGS NF Bold Italic.ttf"
+# tmux plugins (no TPM): cloned at pinned commits into ~/.config/tmux/plugins
+tmux_plugins_dir: "{{ home_dir }}/.config/tmux/plugins"
+tmux_plugins:
+  - name: tmux-resurrect
+    repo: https://github.com/tmux-plugins/tmux-resurrect.git
+    version: cff343cf9e81983d3da0c8562b01616f12e8d548
+  - name: tmux-continuum
+    repo: https://github.com/tmux-plugins/tmux-continuum.git
+    version: 0698e8f4b17d6454c71bf5212895ec055c578da0

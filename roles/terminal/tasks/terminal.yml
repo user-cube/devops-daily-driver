@@ -8,3 +8,19 @@
     - terminal
     - tmux
     - aerospace
+
+# Session persistence (tmux-resurrect + tmux-continuum), pinned to a commit.
+# tmux.conf in dotfiles loads them with run-shell.
+- name: Install tmux plugins at pinned commits
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ tmux_plugins_dir }}/{{ item.name }}"
+    version: "{{ item.version }}"
+  loop: "{{ tmux_plugins }}"
+  loop_control:
+    label: "{{ item.name }}"
+  tags:
+    - install
+    - terminal
+    - tmux
+    - aerospace

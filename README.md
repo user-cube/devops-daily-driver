@@ -203,8 +203,8 @@ so tabs, splits and sessions come from tmux instead, driven by the usual ⌘
 shortcuts (⌘T, ⌘⇧←/→, ⌘1–9, ⌘D, ⌘W, ⌘⇧S for sessions). The first window attaches
 the persistent `main` session; extra windows get throwaway sessions. ⌘O opens any repo
 under `~/work` as a session, ⌘G opens lazygit in a popup. Sessions survive reboots
-via tmux-resurrect + tmux-continuum, vendored (pinned) in dotfiles
-`.config/tmux/plugins`. Config:
+via tmux-resurrect + tmux-continuum, cloned by the playbook at pinned commits
+(`tmux_plugins` in `roles/terminal/defaults/main.yml`) into `~/.config/tmux/plugins`. Config:
 dotfiles `.config/tmux/tmux.conf`. tmux is installed by the `terminal` and
 `aerospace` tags.
 
