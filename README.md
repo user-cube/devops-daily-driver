@@ -65,7 +65,7 @@ devops-daily-driver/
     ├── apps/                # ui-apps, cli-apps, docs, networking
     ├── dev-tools/           # git, gnupg, golang, cicd, kubernetes, iac
     ├── virtualization/      # docker, colima, buildx
-    ├── editors/             # vscode, cursor, jetbrains, neovim
+    ├── editors/             # vscode, jetbrains, neovim
     ├── terminal/            # ghostty, zsh, tmux, fonts, nvim
     ├── aws/                 # awscli, eksctl, granted
     ├── azure/               # azure-cli

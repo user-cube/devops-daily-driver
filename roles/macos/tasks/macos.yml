@@ -7,7 +7,7 @@
         domain: com.apple.dock
         key: tilesize
         type: float
-        value: 28
+        value: 22
 
     - name: Disable Dock magnification
       community.general.osx_defaults:
