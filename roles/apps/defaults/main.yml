@@ -3,3 +3,6 @@
 felixkratz_tools:
   - borders
   - sketchybar
+
+# Attachment name of the Raycast export inside raycast_bitwarden_item
+raycast_bitwarden_attachment: "raycast.rayconfig"

@@ -210,7 +210,8 @@ The `macos` role configures:
 ## Window manager (AeroSpace)
 
 Installs [AeroSpace](https://github.com/nikitabobko/AeroSpace) (`nikitabobko/tap/aerospace`).
-Config and cheat sheet live in dotfiles `.config/aerospace/`. The `cli-apps`
+Config and cheat sheet live in dotfiles `.config/aerospace/`. `⌥f` is left free for Raycast's
+AeroSpace extension (see [Raycast](#raycast)). The `cli-apps`
 tasks check with `pgrep` whether it is running and start it if not, so "running"
 is the desired state rather than a side effect of the install task. Syncing
 dotfiles `.config` reloads it through handlers.
@@ -288,15 +289,25 @@ The playbook frees the shortcut by disabling the Spotlight and Siri bindings, bu
 cannot assign it.
 
 Everything else can travel in a `.rayconfig` export (Settings → Advanced → Export
-Settings & Data), which covers extensions and their preferences, quicklinks,
-snippets, window layouts and general settings. Point `raycast_config_path` at it
-and run:
+Settings & Data), which covers extensions and their preferences, hotkeys,
+quicklinks, snippets, window layouts and general settings. Keep it as an
+attachment (any `*.rayconfig`) on a Bitwarden item (`raycast_bitwarden_item`, here
+"Raycast Backup", with the Export Passphrase as its password); the playbook downloads it to a private temporary file,
+opens the import and deletes the copy once you confirm:
 
 ```bash
-ansible-playbook daily-driver.yml --tags raycast-import
+ansible-playbook daily-driver.yml --tags raycast-import   # give the sudo password
 ```
 
-The task carries the `never` tag, so ordinary runs skip it — otherwise every run
+The Bitwarden session is the one saved by the dotfiles `bw` wrapper (read as root
+with the sudo password; run `bw --regenerate-session-key` once if it has none). An
+exported `BW_SESSION` takes precedence.
+
+After changing Raycast, export again and replace the attachment (Bitwarden app, or
+`command bw create attachment --file <export> --itemid <id>` after deleting the old
+one). Without `raycast_bitwarden_item`, a local `raycast_config_path` is used instead.
+
+The tasks carry the `never` tag, so ordinary runs skip them — otherwise every run
 would pop Raycast's import dialog. Import still asks for confirmation; this makes
 it one click instead of reconfiguring extension by extension.
 
@@ -304,6 +315,11 @@ it one click instead of reconfiguring extension by extension.
 > extension credentials, so secret scanners like gitleaks will not catch them.
 > Store it in a password manager or private location. Raycast Pro's Cloud Sync
 > (`requiresPro`) removes the need for the file entirely.
+
+Window search: install **AeroSpace Tiling Window Manager** from the Raycast Store, set
+its *Default Search* preference to **All**, and give *Switch Apps in Workspace* the
+hotkey `⌥f` (AeroSpace leaves it unbound). `⇧↩` pulls the window to the focused
+workspace, `↩` jumps to it. A `.rayconfig` export carries all of this.
 
 ## Privacy permissions (AeroSpace setup)
 

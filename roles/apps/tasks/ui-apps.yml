@@ -37,18 +37,155 @@
 # dotfiles repo: it can carry extension credentials and is an opaque blob, so
 # secret scanners will not catch them.
 #
+# Source, in order: an attachment of a Bitwarden item (raycast_bitwarden_item),
+# or a local file (raycast_config_path). The Bitwarden session comes from
+# BW_SESSION if exported, else from the file kept by the dotfiles `bw` wrapper
+# (/var/root/.bitwarden.session, read with the sudo password asked at start).
+#
 # Tagged `never`, so a normal run does not re-trigger Raycast's import dialog.
 # Run it deliberately:  ansible-playbook daily-driver.yml --tags raycast-import
-- name: Check whether a Raycast export is available
+- name: Import Raycast settings from Bitwarden
+  when: raycast_bitwarden_item | default('') | length > 0
+  tags:
+    - never
+    - raycast-import
+  environment:
+    BW_SESSION: "{{ raycast_bw_session | default('') }}"
+  block:
+    - name: Read the session saved by the bw wrapper
+      ansible.builtin.slurp:
+        src: /var/root/.bitwarden.session
+      register: raycast_bw_session_file
+      become: true
+      vars:
+        ansible_become_password: "{{ mac_sudo_password }}"
+      when:
+        - lookup('env', 'BW_SESSION') | length == 0
+        - mac_sudo_password | default('') | length > 0
+      failed_when: false
+      no_log: true
+
+    - name: Use the exported or the saved Bitwarden session
+      ansible.builtin.set_fact:
+        raycast_bw_session: >-
+          {{ lookup('env', 'BW_SESSION')
+             or (raycast_bw_session_file.content | default('') | b64decode | trim) }}
+      no_log: true
+
+    - name: Require an unlocked Bitwarden session
+      ansible.builtin.assert:
+        that: raycast_bw_session | length > 0
+        fail_msg: >-
+          No Bitwarden session. Give the sudo password at the start of the run (uses
+          the session saved by `bw --regenerate-session-key`), or
+          `export BW_SESSION="$(command bw unlock --raw)"`.
+
+    - name: Pull the latest vault from Bitwarden
+      ansible.builtin.command: bw sync
+      changed_when: false
+
+    - name: Find the Raycast item in Bitwarden
+      ansible.builtin.command: bw get item "{{ raycast_bitwarden_item }}"
+      register: raycast_bw_item
+      changed_when: false
+      no_log: true
+
+    # The attachment named raycast_bitwarden_attachment, else the first *.rayconfig
+    - name: Pick the Raycast export attachment
+      ansible.builtin.set_fact:
+        raycast_bw_attachment: >-
+          {{ (raycast_bw_attachments | selectattr('fileName', 'equalto', raycast_bitwarden_attachment) | list
+              + raycast_bw_attachments | selectattr('fileName', 'search', '\.rayconfig$') | list)
+             | first | default({}) }}
+      vars:
+        raycast_bw_attachments: "{{ (raycast_bw_item.stdout | from_json).attachments | default([], true) }}"
+      no_log: true
+
+    - name: Require a .rayconfig attachment on the item
+      ansible.builtin.assert:
+        that: raycast_bw_attachment.id is defined
+        fail_msg: >-
+          "{{ raycast_bitwarden_item }}" has no .rayconfig attachment. Export with
+          Raycast's "Export Settings & Data" command and attach the file to it.
+
+    - name: Create a private temporary file for the export
+      ansible.builtin.tempfile:
+        state: file
+        suffix: .rayconfig
+      register: raycast_tmp
+
+    - name: Download the Raycast export attachment
+      ansible.builtin.command: >-
+        bw get attachment "{{ raycast_bw_attachment.id }}"
+        --itemid "{{ (raycast_bw_item.stdout | from_json).id }}"
+        --output "{{ raycast_tmp.path }}"
+      changed_when: false
+      no_log: true
+
+    - name: Restrict the export to the current user
+      ansible.builtin.file:
+        path: "{{ raycast_tmp.path }}"
+        mode: "0600"
+
+    # The Export Passphrase is the item's password. It goes to the clipboard marked
+    # org.nspasteboard.ConcealedType, so clipboard managers (Raycast's Clipboard
+    # History included) don't keep it; passed through the environment, not argv.
+    - name: Copy the Export Passphrase to the clipboard (concealed)
+      ansible.builtin.command:
+        argv:
+          - osascript
+          - -l
+          - JavaScript
+          - -e
+          - >-
+            ObjC.import("AppKit");
+            const secret = $.NSProcessInfo.processInfo.environment.objectForKey("RAYCAST_PASSPHRASE");
+            const pb = $.NSPasteboard.generalPasteboard;
+            pb.clearContents;
+            pb.setStringForType(secret, $.NSPasteboardTypeString);
+            pb.setStringForType($(""), "org.nspasteboard.ConcealedType");
+      environment:
+        RAYCAST_PASSPHRASE: "{{ (raycast_bw_item.stdout | from_json).login.password | default('', true) }}"
+      when: (raycast_bw_item.stdout | from_json).login.password | default('', true) | length > 0
+      register: raycast_passphrase_copied
+      changed_when: false
+      no_log: true
+
+    - name: Open the export in Raycast
+      ansible.builtin.command: open -a Raycast "{{ raycast_tmp.path }}"
+      changed_when: true
+
+    - name: Wait for the import to be confirmed in Raycast
+      ansible.builtin.pause:
+        prompt: >-
+          In Raycast: {{ 'paste the passphrase with ⌘V (already in the clipboard)'
+          if raycast_passphrase_copied is not skipped else 'enter the Export Passphrase' }},
+          Import, then press Enter here (the clipboard and the temporary copy are cleared)
+
+  always:
+    - name: Clear the clipboard
+      ansible.builtin.command: osascript -l JavaScript -e 'ObjC.import("AppKit"); $.NSPasteboard.generalPasteboard.clearContents'
+      when: raycast_passphrase_copied is defined and raycast_passphrase_copied is not skipped
+      changed_when: false
+
+    - name: Delete the temporary export
+      ansible.builtin.file:
+        path: "{{ raycast_tmp.path }}"
+        state: absent
+      when: raycast_tmp.path is defined
+
+- name: Check whether a local Raycast export is available
   ansible.builtin.stat:
     path: "{{ raycast_config_path | expanduser }}"
   register: raycast_config
-  when: raycast_config_path | default('') | length > 0
+  when:
+    - raycast_bitwarden_item | default('') | length == 0
+    - raycast_config_path | default('') | length > 0
   tags:
     - never
     - raycast-import
 
-- name: Import Raycast settings
+- name: Import Raycast settings from a local file
   ansible.builtin.command: open -a Raycast "{{ raycast_config_path | expanduser }}"
   when: raycast_config.stat.exists | default(false)
   changed_when: true

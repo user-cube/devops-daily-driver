@@ -35,3 +35,5 @@ custom_user_casks:
 # Keep this file outside the dotfiles repo if that repo is public — the export
 # is an opaque blob that may carry extension credentials.
 # raycast_config_path: "~/Documents/raycast.rayconfig"
+# Or keep it as an attachment of a Bitwarden item (preferred; needs BW_SESSION):
+raycast_bitwarden_item: "Raycast Backup"
