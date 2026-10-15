@@ -202,7 +202,7 @@ The `macos` role configures:
 - **Menu bar** — Sound always shown
 - **Spaces** — no automatic rearranging of Spaces
 - **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled; with AeroSpace, Mission Control ctrl ←/→ disabled
-- **Touch ID for sudo** — `pam_tid.so` in `/etc/pam.d/sudo_local` (survives macOS updates). Needs the sudo password asked at the start of the run; skipped when left empty. Run alone with `--tags touchid`.
+- **Touch ID for sudo** — `pam_tid.so` in `/etc/pam.d/sudo_local` (survives macOS updates), preceded by `pam_reattach` (Homebrew `pam-reattach`) so it also works inside tmux. Needs the sudo password asked at the start of the run; skipped when left empty. Run alone with `--tags touchid`.
 
   Both Spotlight and Siri bind ⌘Space; Siri's default is *hold* ⌘Space, which
   swallows the keystroke before any app sees it. The playbook frees the shortcut

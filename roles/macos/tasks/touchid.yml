@@ -2,12 +2,35 @@
 # Touch ID for sudo. /etc/pam.d/sudo_local survives macOS updates (unlike
 # /etc/pam.d/sudo). Needs root: uses the sudo password prompted at the start of
 # the run and is skipped when it was left empty.
+#
+# pam_reattach reconnects sudo to the GUI session so Touch ID also works inside
+# tmux (some setups fall back to the password without it). It must come before
+# pam_tid; ignore_ssh skips it over SSH.
+- name: Install pam-reattach (Touch ID inside tmux)
+  community.general.homebrew:
+    name: pam-reattach
+    state: present
+
 - name: Enable Touch ID for sudo
   ansible.builtin.lineinfile:
     path: /etc/pam.d/sudo_local
     regexp: '^#?\s*auth\s+sufficient\s+pam_tid\.so'
     line: "auth       sufficient     pam_tid.so"
     create: true
+    owner: root
+    group: wheel
+    mode: "0444"
+  become: true
+  vars:
+    ansible_become_password: "{{ mac_sudo_password }}"
+  when: mac_sudo_password | default('') | length > 0
+
+- name: Load pam_reattach before Touch ID for sudo
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sudo_local
+    regexp: '^#?\s*auth\s+optional\s+\S*pam_reattach\.so'
+    line: "auth       optional       /opt/homebrew/lib/pam/pam_reattach.so ignore_ssh"
+    insertbefore: '^auth\s+sufficient\s+pam_tid\.so'
     owner: root
     group: wheel
     mode: "0444"
