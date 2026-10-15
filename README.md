@@ -182,13 +182,9 @@ Other per-machine files, also never overwritten:
 | `~/.config/tmux/sessions.local` | repos preloaded as tmux sessions |
 | `~/.config/sketchybar/aws_profiles` | AWS profiles shown in SketchyBar |
 
-To update a machine without running Ansible:
-
-```bash
-git -C ~/dotfiles pull
-rsync -a ~/dotfiles/.config/ ~/.config/
-cp ~/dotfiles/.zshrc ~/.zshrc
-```
+To update a machine without running Ansible, run `dotfiles-sync` (a shell function
+from dotfiles `.config/zsh/dotfiles.zsh`): it pulls `~/dotfiles`, syncs the same files
+as the `dotfiles` tag and reloads tmux, AeroSpace, SketchyBar and borders.
 
 ## macOS settings
 
