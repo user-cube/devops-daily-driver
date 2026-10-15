@@ -106,6 +106,16 @@
         type: bool
         value: false
 
+    # AeroSpace guide 4.3: macOS is more stable with "Displays have separate
+    # Spaces" off. Takes effect after logging out and back in.
+    - name: Disable "Displays have separate Spaces" (AeroSpace)
+      community.general.osx_defaults:
+        domain: com.apple.spaces
+        key: spans-displays
+        type: bool
+        value: true
+      tags: [aerospace]
+
 - name: Configure macOS Menu Bar
   tags: macos, menubar
   block:
@@ -213,6 +223,31 @@
         type: string
         value: Dark
 
+- name: Configure macOS Screenshots
+  tags: macos, screenshots
+  block:
+    - name: Create the screenshots folder
+      ansible.builtin.file:
+        path: "{{ lookup('env', 'HOME') }}/Pictures/Screenshots"
+        state: directory
+        mode: "0755"
+
+    - name: Save screenshots to ~/Pictures/Screenshots
+      community.general.osx_defaults:
+        domain: com.apple.screencapture
+        key: location
+        type: string
+        value: "{{ lookup('env', 'HOME') }}/Pictures/Screenshots"
+      notify: Restart SystemUIServer
+
+    - name: Disable the window shadow in screenshots
+      community.general.osx_defaults:
+        domain: com.apple.screencapture
+        key: disable-shadow
+        type: bool
+        value: true
+      notify: Restart SystemUIServer
+
 - name: Configure macOS Keyboard
   tags: macos, keyboard
   block:
@@ -236,6 +271,21 @@
         key: NSAutomaticPeriodSubstitutionEnabled
         type: bool
         value: true
+
+    # Curly quotes and em dashes break code pasted into chats and notes
+    - name: Disable smart quotes
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticQuoteSubstitutionEnabled
+        type: bool
+        value: false
+
+    - name: Disable smart dashes
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: NSAutomaticDashSubstitutionEnabled
+        type: bool
+        value: false
 
     # Only rewrite the hotkeys when at least one of them is still enabled,
     # otherwise these two tasks report "changed" on every single run.

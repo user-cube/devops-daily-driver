@@ -7,6 +7,7 @@
     - finder
     - keyboard
     - appearance
+    - screenshots
     - install
 
 - import_tasks: touchid.yml
