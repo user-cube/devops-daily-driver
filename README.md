@@ -196,8 +196,9 @@ as the `dotfiles` tag and reloads tmux, AeroSpace, SketchyBar and borders.
 ## macOS settings
 
 The `macos` role configures:
-- **Dock** — size, position (right), magnification, animation, indicators
-- **Finder** — extensions, hidden files, path bar, status bar, column view
+- **Dock** — size, position (right), magnification, animation, indicators; bottom-right hot corner (Quick Note) off
+- **Finder** — extensions, hidden files, path bar, status bar, column view; no `.DS_Store` on network shares or USB drives
+- **Appearance** — dark mode
 - **Menu bar** — Sound always shown
 - **Spaces** — no automatic rearranging of Spaces
 - **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled; with AeroSpace, Mission Control ctrl ←/→ disabled

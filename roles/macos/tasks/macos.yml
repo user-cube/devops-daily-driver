@@ -74,6 +74,22 @@
         value: false
       notify: Restart Dock
 
+    - name: Disable the bottom-right hot corner (Quick Note)
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: wvous-br-corner
+        type: int
+        value: 1
+      notify: Restart Dock
+
+    - name: Clear the bottom-right hot corner modifier
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: wvous-br-modifier
+        type: int
+        value: 0
+      notify: Restart Dock
+
     - name: Disable automatically rearranging Spaces (keeps AeroSpace stable)
       community.general.osx_defaults:
         domain: com.apple.dock
@@ -155,6 +171,22 @@
         value: false
       notify: Restart Finder
 
+    - name: Don't write .DS_Store files on network shares
+      community.general.osx_defaults:
+        domain: com.apple.desktopservices
+        key: DSDontWriteNetworkStores
+        type: bool
+        value: true
+      notify: Restart Finder
+
+    - name: Don't write .DS_Store files on USB drives
+      community.general.osx_defaults:
+        domain: com.apple.desktopservices
+        key: DSDontWriteUSBStores
+        type: bool
+        value: true
+      notify: Restart Finder
+
     - name: Use list view by default
       community.general.osx_defaults:
         domain: com.apple.finder
@@ -162,6 +194,17 @@
         type: string
         value: clmv
       notify: Restart Finder
+
+- name: Configure macOS Appearance
+  tags: macos, appearance
+  block:
+    # Takes effect for already-open apps after logging out and back in
+    - name: Use dark mode
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: AppleInterfaceStyle
+        type: string
+        value: Dark
 
 - name: Configure macOS Keyboard
   tags: macos, keyboard

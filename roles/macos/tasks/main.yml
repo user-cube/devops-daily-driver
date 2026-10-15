@@ -6,6 +6,7 @@
     - menubar
     - finder
     - keyboard
+    - appearance
     - install
 
 - import_tasks: touchid.yml
