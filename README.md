@@ -162,6 +162,8 @@ Clones the repository defined in `host_vars/localhost.yml` (macOS only), syncs `
 `~/.config`, copies `.zshrc` and `.p10k.zsh` to `~`, and copies any of `.gitconfig`,
 `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config` reloads tmux,
 AeroSpace, borders and SketchyBar.
+lazygit's macOS config path (`~/Library/Application Support/lazygit/config.yml`) is linked to
+the synced `~/.config/lazygit/config.yml` (delta diffs, side by side when wide).
 
 `~/.zshrc` is **overwritten** on every run. Anything specific to one machine (work-only
 tools, aliases) belongs in `~/.zshrc.local`, which `.zshrc` sources last and the
