@@ -6,7 +6,6 @@
       - git-secrets
       - gitleaks
       - lazygit
-      - delta
       - pre-commit
       - gnupg
       - pinentry-mac

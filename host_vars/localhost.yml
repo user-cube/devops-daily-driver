@@ -19,10 +19,12 @@ directories_to_create:
 # Custom tools
 custom_user_taps:
   - user-cube/tap
+  - jnsahaj/lumen
 
 custom_user_tools:
   - user-cube/tap/kontext
   - user-cube/tap/aws-cli-manager
+  - jnsahaj/lumen/lumen # side-by-side diff viewer (tmux popup, cmd-shift-g)
   # Optional, uncomment to install:
   # - user-cube/tap/cluster-bootstrap-cli
 

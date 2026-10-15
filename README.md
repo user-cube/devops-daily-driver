@@ -167,8 +167,6 @@ Clones the repository defined in `host_vars/localhost.yml` (macOS only), syncs `
 `~/.config`, copies `.zshrc` and `.p10k.zsh` to `~`, and copies any of `.gitconfig`,
 `.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config` reloads tmux,
 AeroSpace, borders and SketchyBar.
-lazygit's macOS config path (`~/Library/Application Support/lazygit/config.yml`) is linked to
-the synced `~/.config/lazygit/config.yml` (delta diffs, side by side when wide).
 
 `~/.zshrc` is **overwritten** on every run. Anything specific to one machine (work-only
 tools, aliases) belongs in `~/.zshrc.local`, which `.zshrc` sources last and the
@@ -237,7 +235,9 @@ dotfiles): Ghostty's native tabs are separate macOS windows that AeroSpace tiles
 so tabs, splits and sessions come from tmux instead, driven by the usual ⌘
 shortcuts (⌘T, ⌘⇧←/→, ⌘1–9, ⌘D, ⌘W, ⌘⇧S for sessions). The first window attaches
 the persistent `main` session; extra windows get throwaway sessions. ⌘O opens any repo
-under `~/work` as a session, ⌘G opens lazygit in a popup. Sessions survive reboots
+under `~/work` as a session, ⌘G opens lazygit in a popup, ⌘⇧G a side-by-side diff of uncommitted changes
+([lumen](https://github.com/jnsahaj/lumen), from `custom_user_tools`), ⌘E the yazi file
+manager, ⌘⇧L lazydocker and ⌘K k9s. Sessions survive reboots
 via tmux-resurrect + tmux-continuum, cloned by the playbook at pinned commits
 (`tmux_plugins` in `roles/terminal/defaults/main.yml`) into `~/.config/tmux/plugins`. Config:
 dotfiles `.config/tmux/tmux.conf`. tmux is installed by the `terminal` and
