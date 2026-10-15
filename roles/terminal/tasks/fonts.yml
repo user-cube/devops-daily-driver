@@ -8,12 +8,26 @@
     - install
     - fonts
 
+# get_url reports "changed" in --check even when the file exists, so only the
+# missing fonts are downloaded.
+- name: Check which MesloLGS NF fonts are installed
+  ansible.builtin.stat:
+    path: "{{ fonts_dest_dir }}/{{ item }}"
+  loop: "{{ fonts_meslo_files }}"
+  register: fonts_meslo_installed
+  tags:
+    - install
+    - fonts
+
 - name: Install MesloLGS NF fonts (Powerlevel10k)
   ansible.builtin.get_url:
-    url: "{{ fonts_base_url }}/{{ item | replace(' ', '%20') }}"
-    dest: "{{ fonts_dest_dir }}/{{ item }}"
+    url: "{{ fonts_base_url }}/{{ item.item | replace(' ', '%20') }}"
+    dest: "{{ fonts_dest_dir }}/{{ item.item }}"
     mode: "0644"
-  loop: "{{ fonts_meslo_files }}"
+  loop: "{{ fonts_meslo_installed.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  when: not item.stat.exists
   tags:
     - install
     - fonts
