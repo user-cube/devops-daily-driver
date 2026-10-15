@@ -164,10 +164,12 @@ Clones the repository defined in `host_vars/localhost.yml` (macOS only), syncs `
 AeroSpace, borders and SketchyBar.
 
 `~/.zshrc` is **overwritten** on every run. Anything specific to one machine (work-only
-tools, tokens, aliases) belongs in `~/.zshrc.local`, which `.zshrc` sources last and the
+tools, aliases) belongs in `~/.zshrc.local`, which `.zshrc` sources last and the
 playbook never touches. Shared shell functions live in dotfiles `.config/zsh/*.zsh` and
 are sourced automatically (e.g. `bw.zsh`, the Bitwarden CLI wrapper, which needs
-`export BW_USER=<email>` in `~/.zshrc.local`).
+`export BW_USER=<email>` in `~/.zshrc.local`). Tokens and API keys are not stored in
+any file: they are fetched from Bitwarden when the tool that needs them starts (see the
+Secrets section of the dotfiles README).
 
 Shell startup stays around 0.2 s: nvm loads on first use, `pyenv init` skips the rehash
 and tool completions are cached in `~/.cache/zsh` (regenerated when the tool is upgraded).
@@ -176,7 +178,7 @@ Other per-machine files, also never overwritten:
 
 | File | Purpose |
 |---|---|
-| `~/.zshrc.local` | machine-specific shell config and secrets |
+| `~/.zshrc.local` | machine-specific shell config (no tokens; see above) |
 | `~/.config/tmux/sessions.local` | repos preloaded as tmux sessions |
 | `~/.config/sketchybar/aws_profiles` | AWS profiles shown in SketchyBar |
 
