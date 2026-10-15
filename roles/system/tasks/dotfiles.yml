@@ -34,6 +34,30 @@
     - install
     - aerospace
 
+# ~/.ssh/config stays per machine (hosts, users, keys); only this Include line
+# is managed, at the top so its `Host *` defaults (ControlMaster) apply everywhere.
+- name: Ensure ~/.ssh exists
+  ansible.builtin.file:
+    path: "{{ home_dir }}/.ssh"
+    state: directory
+    mode: "0700"
+  tags:
+    - dotfiles
+    - install
+    - ssh
+
+- name: Include the dotfiles ssh config from ~/.ssh/config
+  ansible.builtin.lineinfile:
+    path: "{{ home_dir }}/.ssh/config"
+    line: "Include ~/.config/ssh/*.conf"
+    insertbefore: BOF
+    create: true
+    mode: "0600"
+  tags:
+    - dotfiles
+    - install
+    - ssh
+
 - name: Copy .zshrc to ~/.zshrc
   ansible.builtin.copy:
     src: "{{ dotfiles_dest }}/.zshrc"
