@@ -110,6 +110,8 @@
       - jq
       - yq
       - ripgrep
+      # fd: Telescope find_files, yazi search and fzf use it when present
+      - fd
       - yamllint
     state: present
   tags:
