@@ -210,7 +210,7 @@ The `macos` role configures:
 - **Finder** — extensions, hidden files, path bar, status bar, column view; no `.DS_Store` on network shares or USB drives
 - **Appearance** — dark mode
 - **Menu bar** — Sound always shown
-- **Spaces** — no automatic rearranging of Spaces
+- **Spaces** — no automatic rearranging of Spaces; clicking the wallpaper only reveals the desktop in Stage Manager
 - **Keyboard** — full keyboard access, Spotlight shortcuts disabled, Siri disabled; with AeroSpace, Mission Control ctrl ←/→ disabled
 - **Touch ID for sudo** — `pam_tid.so` in `/etc/pam.d/sudo_local` (survives macOS updates), preceded by `pam_reattach` (Homebrew `pam-reattach`) so it also works inside tmux. Needs the sudo password asked at the start of the run; skipped when left empty. Run alone with `--tags touchid`.
 

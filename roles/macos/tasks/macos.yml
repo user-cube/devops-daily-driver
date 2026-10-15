@@ -99,6 +99,13 @@
       notify: Restart Dock
       tags: [aerospace]
 
+    - name: Click wallpaper to reveal desktop only in Stage Manager
+      community.general.osx_defaults:
+        domain: com.apple.WindowManager
+        key: EnableStandardClickToShowDesktop
+        type: bool
+        value: false
+
 - name: Configure macOS Menu Bar
   tags: macos, menubar
   block:
