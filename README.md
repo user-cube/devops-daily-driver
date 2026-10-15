@@ -35,10 +35,22 @@ cp host_vars/localhost.yml host_vars/localhost.yml.bak
 ansible-playbook daily-driver.yml
 ```
 
-The playbook prompts once for a sudo password. It is only used by casks that ship
-their own installers (currently the Logitech ones) — press enter to skip it and
-those tasks will fail while everything else proceeds. No task uses `become`, so
-`-K` is not needed.
+Then, by hand, once the first run has finished (these steps are tagged `never`, so a
+normal run skips them, and they need apps the first run installs):
+
+```bash
+# 7. Log in to Bitwarden once (the dotfiles `bw` wrapper saves the session)
+bw --regenerate-session-key
+
+# 8. Import Raycast settings from Bitwarden, then grant the privacy permissions
+ansible-playbook daily-driver.yml --tags raycast-import
+ansible-playbook daily-driver.yml --tags permissions
+```
+
+The playbook prompts once for a sudo password. It is used by casks that ship their
+own installers (the Logitech ones), to enable Touch ID for sudo and to read the
+Bitwarden session for the Raycast import. Press enter to skip it: those tasks are
+skipped or fail while everything else proceeds. `-K` is not needed.
 
 Preview a run without changing anything:
 
@@ -308,7 +320,9 @@ After changing Raycast, export again and replace the attachment (Bitwarden app, 
 one). Without `raycast_bitwarden_item`, a local `raycast_config_path` is used instead.
 
 The tasks carry the `never` tag, so ordinary runs skip them — otherwise every run
-would pop Raycast's import dialog. Import still asks for confirmation; this makes
+would pop Raycast's import dialog. Run them by hand after the first full run (see
+[Fresh install](#fresh-install)): they need Raycast and `bitwarden-cli`, which that
+run installs, and a Bitwarden login. Import still asks for confirmation; this makes
 it one click instead of reconfiguring extension by extension.
 
 > **Keep the export out of a public repo.** It is an opaque blob that may carry

@@ -43,7 +43,9 @@
 # (/var/root/.bitwarden.session, read with the sudo password asked at start).
 #
 # Tagged `never`, so a normal run does not re-trigger Raycast's import dialog.
-# Run it deliberately:  ansible-playbook daily-driver.yml --tags raycast-import
+# Run it by hand after the first full run (it needs Raycast and bitwarden-cli,
+# installed by that run, and a `bw --regenerate-session-key` login):
+#   ansible-playbook daily-driver.yml --tags raycast-import
 - name: Import Raycast settings from Bitwarden
   when: raycast_bitwarden_item | default('') | length > 0
   tags:
