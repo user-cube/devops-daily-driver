@@ -5,6 +5,7 @@
       - colima
       - docker
       - docker-compose
+      - docker-buildx
       - docker-credential-helper
       - qemu
       - lima-additional-guestagents
@@ -31,26 +32,6 @@
     - virtualization
     - colima
 
-- name: Get latest release from GitHub API
-  uri:
-    url: https://api.github.com/repos/docker/buildx/releases/latest
-    return_content: true
-  register: github_release
-  check_mode: false
-
-- name: Set latest version and download URL for macOS ARM64
-  set_fact:
-    buildx_version: "{{ github_release.json.tag_name }}"
-    buildx_download_url: >-
-      {{ github_release.json.assets
-        | selectattr('name', 'match', '.*darwin-arm64$')
-        | map(attribute='browser_download_url')
-        | list
-        | first }}
-  tags:
-    - virtualization
-    - docker-buildx
-
 - name: Create Docker CLI plugin directory
   file:
     path: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins"
@@ -60,11 +41,15 @@
     - virtualization
     - docker-buildx
 
-- name: Download Docker Buildx binary for macOS ARM64
-  get_url:
-    url: "{{ buildx_download_url }}"
+# Homebrew's docker-buildx (checksum-verified, updated by `brew upgrade`) lives
+# outside Docker's plugin path; a symlink makes `docker buildx` find it without
+# editing ~/.docker/config.json.
+- name: Link Docker Buildx plugin from Homebrew
+  ansible.builtin.file:
+    src: /opt/homebrew/lib/docker/cli-plugins/docker-buildx
     dest: "{{ lookup('env', 'HOME') }}/.docker/cli-plugins/docker-buildx"
-    mode: '0755'
+    state: link
+    force: true
   tags:
     - virtualization
     - docker-buildx

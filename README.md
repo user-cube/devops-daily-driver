@@ -64,7 +64,7 @@ devops-daily-driver/
     ├── macos/               # dock, finder, keyboard shortcuts
     ├── apps/                # ui-apps, cli-apps, docs, networking
     ├── dev-tools/           # git, gnupg, golang, cicd, kubernetes, iac
-    ├── virtualization/      # docker, colima, buildx
+    ├── virtualization/      # docker, colima, buildx (Homebrew)
     ├── editors/             # vscode, jetbrains, neovim
     ├── terminal/            # ghostty, zsh, tmux, fonts, nvim
     ├── aws/                 # awscli, eksctl, granted
@@ -225,7 +225,7 @@ The GitLab, AWS and GCP items stay hidden until their CLI is logged in.
 
 ## Ghostty
 
-Installs Ghostty (tip/development build) and syncs config from dotfiles if `dotfiles/.config/ghostty/` exists.
+Installs Ghostty (tip/development build); its config comes from the dotfiles `.config` sync.
 
 
 Every Ghostty window starts inside **tmux** (`.config/ghostty/tmux-start.sh` in
