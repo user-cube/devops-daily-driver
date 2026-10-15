@@ -36,6 +36,16 @@
     - zsh
     - pyenv
 
+# pipx: Python CLI tools, each in its own virtualenv
+- name: Install pipx
+  community.general.homebrew:
+    name: pipx
+    state: present
+  tags:
+    - install
+    - zsh
+    - pipx
+
 - name: Install nvm
   ansible.builtin.shell: |
     set -o pipefail

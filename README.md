@@ -117,7 +117,7 @@ for:
 `documentation-tools`, `dev-tools`, `git-tools`, `gh-cli`, `glab`, `golang`,
 `cicd`, `kubernetes`, `cluster-visualization`, `iac`, `terraform`, `opentofu`,
 `secrets`, `ai`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
-`terminal`, `ghostty`, `zsh`, `pyenv`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
+`terminal`, `ghostty`, `zsh`, `pyenv`, `pipx`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
 `gcp`, `custom-tools`, `demo`, `menubar`, `node`, `ios`, `krr`.
 
 **Feature tags** cut across roles: `aerospace` runs everything for the window
