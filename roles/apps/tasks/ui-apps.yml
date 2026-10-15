@@ -11,6 +11,7 @@
       - obsidian
       - betterdisplay
       - stats
+      - bitwarden # also the SSH agent (SSH_AUTH_SOCK in dotfiles .zshrc)
     state: present
   tags:
     - install

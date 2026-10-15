@@ -1,0 +1,3 @@
+---
+# Optional tools, off by default; enable per machine in host_vars/localhost.yml
+install_kubelogin: false # OIDC login plugin for kubectl (kubectl oidc-login)

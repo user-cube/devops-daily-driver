@@ -34,3 +34,22 @@
   tags:
     - custom-tools
     - install
+
+- name: Trust custom casks from user taps
+  ansible.builtin.command: >-
+    brew trust --cask {{ custom_user_casks | join(' ') }}
+  register: custom_casks_trust
+  changed_when: "'Trusted ' in custom_casks_trust.stdout"
+  when: custom_user_casks | length > 0
+  tags:
+    - custom-tools
+    - install
+
+- name: Install custom casks
+  community.general.homebrew_cask:
+    name: "{{ custom_user_casks }}"
+    state: present
+  when: custom_user_casks | length > 0
+  tags:
+    - custom-tools
+    - install

@@ -4,6 +4,9 @@ install_aws: true
 install_azure: false
 install_gcp: false
 
+# Optional tools — set to true to install
+install_kubelogin: false
+
 # Dotfiles
 dotfiles_repo: "https://github.com/user-cube/dotfiles.git"
 
@@ -20,6 +23,11 @@ custom_user_taps:
 custom_user_tools:
   - user-cube/tap/kontext
   - user-cube/tap/aws-cli-manager
+  # Optional, uncomment to install:
+  # - user-cube/tap/cluster-bootstrap-cli
+
+custom_user_casks:
+  - user-cube/tap/tackle-desktop
 
 # Raycast settings export (.rayconfig), imported only via --tags raycast-import.
 # Keep this file outside the dotfiles repo if that repo is public — the export

@@ -45,6 +45,7 @@
     name:
       - age
       - sops
+      - bitwarden-cli # `bw`, used for secrets on demand (dotfiles README)
     state: present
   tags:
     - install

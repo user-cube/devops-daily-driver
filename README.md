@@ -65,7 +65,7 @@ devops-daily-driver/
     ├── apps/                # ui-apps, cli-apps, docs, networking
     ├── dev-tools/           # git, gnupg, golang, cicd, kubernetes, iac
     ├── virtualization/      # docker, colima, buildx (Homebrew)
-    ├── editors/             # vscode, jetbrains, neovim
+    ├── editors/             # vscode, jetbrains, neovim, claude code, rtk
     ├── terminal/            # ghostty, zsh, tmux, fonts, nvim
     ├── aws/                 # awscli, eksctl, granted
     ├── azure/               # azure-cli
@@ -100,7 +100,7 @@ for:
 `keyboard`, `apps`, `ui-apps`, `cli-apps`, `logitech`, `networking`,
 `documentation-tools`, `dev-tools`, `git-tools`, `gh-cli`, `glab`, `golang`,
 `cicd`, `kubernetes`, `cluster-visualization`, `iac`, `terraform`, `opentofu`,
-`secrets`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
+`secrets`, `ai`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
 `terminal`, `ghostty`, `zsh`, `pyenv`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
 `gcp`, `custom-tools`, `demo`, `menubar`.
 
@@ -127,6 +127,9 @@ install_aws: true
 install_azure: false
 install_gcp: false
 
+# Optional tools (opt-in, default false)
+install_kubelogin: false   # OIDC login plugin for kubectl
+
 # Dotfiles
 dotfiles_repo: "https://github.com/your-user/dotfiles.git"
 
@@ -140,6 +143,8 @@ custom_user_taps:
   - your-tap/tap
 custom_user_tools:
   - your-tap/tap/tool-name
+custom_user_casks:
+  - your-tap/tap/app-name
 ```
 
 ## Cloud providers

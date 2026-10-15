@@ -23,3 +23,21 @@
   tags:
     - install
     - editors
+
+- name: Install Claude Code
+  community.general.homebrew_cask:
+    name: claude-code
+    state: present
+  tags:
+    - install
+    - editors
+    - ai
+
+- name: Install rtk (token-optimised CLI proxy used by Claude Code hooks)
+  community.general.homebrew:
+    name: rtk
+    state: present
+  tags:
+    - install
+    - editors
+    - ai

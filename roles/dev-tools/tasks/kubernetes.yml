@@ -33,3 +33,13 @@
   tags:
     - install
     - kubernetes-cli-tools
+
+- name: Install kubelogin (OIDC login plugin for kubectl)
+  community.general.homebrew:
+    name: kubelogin
+    state: present
+  when: install_kubelogin | bool
+  tags:
+    - install
+    - kubernetes-cli-tools
+    - kubelogin
