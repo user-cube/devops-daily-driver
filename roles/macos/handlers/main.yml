@@ -11,6 +11,7 @@
   ansible.builtin.command: killall Finder
   changed_when: true
 
+# screencaptureui (the ⌘⇧5 app) only runs while in use
 - name: Restart SystemUIServer
-  ansible.builtin.command: killall SystemUIServer
+  ansible.builtin.shell: killall SystemUIServer; killall screencaptureui 2>/dev/null || true
   changed_when: true

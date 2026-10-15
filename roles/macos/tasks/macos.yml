@@ -232,12 +232,19 @@
         state: directory
         mode: "0755"
 
-    - name: Save screenshots to ~/Pictures/Screenshots
+    # Recent macOS reads one location per mode (location-screenshot,
+    # location-screenrecording) and ignores `location` alone; the values are
+    # what ⌘⇧5 > Options > Save to writes.
+    - name: Save screenshots and recordings to ~/Pictures/Screenshots
       community.general.osx_defaults:
         domain: com.apple.screencapture
-        key: location
+        key: "{{ item }}"
         type: string
-        value: "{{ lookup('env', 'HOME') }}/Pictures/Screenshots"
+        value: "~/Pictures/Screenshots"
+      loop:
+        - location
+        - location-screenshot
+        - location-screenrecording
       notify: Restart SystemUIServer
 
     - name: Disable the window shadow in screenshots
