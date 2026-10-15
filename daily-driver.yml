@@ -91,3 +91,14 @@
         - never
         - aerospace
         - permissions
+
+    # Per-machine files from Bitwarden (local-backup in the dotfiles). Outside the
+    # roles so the `system`/`dotfiles` tags don't pull it in:
+    #   --tags local-restore   [-e local_files_machine=Old-Mac]
+    - name: Restore per-machine files from Bitwarden
+      ansible.builtin.import_role:
+        name: system
+        tasks_from: local-files
+      tags:
+        - never
+        - local-restore

@@ -104,6 +104,11 @@ ansible-playbook daily-driver.yml --tags aerospace
 # Only the permissions guide (e.g. after `brew upgrade sketchybar`)
 ansible-playbook daily-driver.yml --tags permissions
 
+# New Mac: restore the per-machine files saved with `local-backup` (dotfiles)
+# from Bitwarden; existing files are kept. Another machine's backup:
+#   -e local_files_machine=Old-Mac
+ansible-playbook daily-driver.yml --tags local-restore
+
 # Homebrew packages installed by hand that the playbook doesn't know about
 # (leftovers to uninstall, or tools to add to a role)
 scripts/brew-drift.sh

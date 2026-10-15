@@ -1,0 +1,53 @@
+---
+# Restore the per-machine files (~/.zshrc.local, ~/.kube/config, …) from the
+# Bitwarden note "Local files (<machine>)" made by `local-backup` (dotfiles
+# .config/dotfiles/local-files.sh). Existing files are never overwritten.
+# Tagged `never`; run it by hand on a new Mac, after a full run and a
+# `bw --regenerate-session-key` login:
+#   ansible-playbook daily-driver.yml --tags local-restore
+#   ansible-playbook daily-driver.yml --tags local-restore -e local_files_machine=Old-Mac
+- name: Restore per-machine files from Bitwarden
+  environment:
+    BW_SESSION: "{{ local_files_bw_session | default('') }}"
+  block:
+    - name: Read the session saved by the bw wrapper
+      ansible.builtin.slurp:
+        src: /var/root/.bitwarden.session
+      register: local_files_bw_session_file
+      become: true
+      vars:
+        ansible_become_password: "{{ mac_sudo_password }}"
+      when:
+        - lookup('env', 'BW_SESSION') | length == 0
+        - mac_sudo_password | default('') | length > 0
+      failed_when: false
+      no_log: true
+
+    - name: Use the exported or the saved Bitwarden session
+      ansible.builtin.set_fact:
+        local_files_bw_session: >-
+          {{ lookup('env', 'BW_SESSION')
+             or (local_files_bw_session_file.content | default('') | b64decode | trim) }}
+      no_log: true
+
+    - name: Require an unlocked Bitwarden session
+      ansible.builtin.assert:
+        that: local_files_bw_session | length > 0
+        fail_msg: >-
+          No Bitwarden session. Give the sudo password at the start of the run (uses
+          the session saved by `bw --regenerate-session-key`), or
+          `export BW_SESSION="$(command bw unlock --raw)"`.
+
+    - name: Restore the files (existing ones are kept)
+      ansible.builtin.command:
+        argv:
+          - "{{ home_dir }}/.config/dotfiles/local-files.sh"
+          - restore
+          - "{{ local_files_machine | default('') }}"
+      register: local_files_restore
+      changed_when: >-
+        local_files_restore.stdout_lines | select('match', '^  ~/') | reject('search', 'exists, kept') | list | length > 0
+
+    - name: Show what was restored
+      ansible.builtin.debug:
+        var: local_files_restore.stdout_lines
