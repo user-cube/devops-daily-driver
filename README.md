@@ -103,6 +103,10 @@ ansible-playbook daily-driver.yml --tags aerospace
 
 # Only the permissions guide (e.g. after `brew upgrade sketchybar`)
 ansible-playbook daily-driver.yml --tags permissions
+
+# Homebrew packages installed by hand that the playbook doesn't know about
+# (leftovers to uninstall, or tools to add to a role)
+scripts/brew-drift.sh
 ```
 
 Tags come in two layers. **Role and area tags** are the ones you normally reach
@@ -114,7 +118,7 @@ for:
 `cicd`, `kubernetes`, `cluster-visualization`, `iac`, `terraform`, `opentofu`,
 `secrets`, `ai`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
 `terminal`, `ghostty`, `zsh`, `pyenv`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
-`gcp`, `custom-tools`, `demo`, `menubar`.
+`gcp`, `custom-tools`, `demo`, `menubar`, `node`, `ios`, `krr`.
 
 **Feature tags** cut across roles: `aerospace` runs everything for the window
 manager setup (AeroSpace, borders, SketchyBar, its fonts, macOS Spaces/menu bar
@@ -141,6 +145,8 @@ install_gcp: false
 
 # Optional tools (opt-in, default false)
 install_kubelogin: false   # OIDC login plugin for kubectl
+install_node: false        # yarn, corepack
+install_ios: false         # xcodegen, ldid, zsign, dpkg (sign iOS apps outside the App Store)
 
 # Dotfiles
 dotfiles_repo: "https://github.com/your-user/dotfiles.git"

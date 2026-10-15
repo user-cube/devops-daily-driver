@@ -6,6 +6,8 @@ install_gcp: false
 
 # Optional tools — set to true to install
 install_kubelogin: false
+install_node: false
+install_ios: false
 
 # Dotfiles
 dotfiles_repo: "https://github.com/user-cube/dotfiles.git"

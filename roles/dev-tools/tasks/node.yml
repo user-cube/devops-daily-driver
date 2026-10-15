@@ -1,0 +1,11 @@
+---
+- name: Install Node package managers (install_node)
+  community.general.homebrew:
+    name:
+      - yarn
+      - corepack
+    state: present
+  when: install_node | bool
+  tags:
+    - install
+    - node

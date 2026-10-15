@@ -153,6 +153,8 @@
       - asciinema
       - yazi
       - kubectx
+      - make # GNU make; macOS ships an old one
+      - mkcert # locally trusted HTTPS certificates for localhost
     state: present
   tags:
     - install

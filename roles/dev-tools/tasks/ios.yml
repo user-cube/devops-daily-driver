@@ -1,0 +1,13 @@
+---
+- name: Install iOS project and signing tools (install_ios)
+  community.general.homebrew:
+    name:
+      - xcodegen # Xcode projects from YAML
+      - ldid # sign iOS binaries
+      - zsign # re-sign .ipa files
+      - dpkg # .deb packages for the sideloading flow
+    state: present
+  when: install_ios | bool
+  tags:
+    - install
+    - ios

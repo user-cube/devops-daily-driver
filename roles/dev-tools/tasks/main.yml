@@ -27,3 +27,13 @@
   tags:
     - iac
     - install
+
+- import_tasks: node.yml
+  tags:
+    - node
+    - install
+
+- import_tasks: ios.yml
+  tags:
+    - ios
+    - install

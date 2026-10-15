@@ -34,6 +34,25 @@
     - install
     - kubernetes-cli-tools
 
+- name: Tap Robusta (krr)
+  community.general.homebrew_tap:
+    name: robusta-dev/krr
+    state: present
+  tags:
+    - install
+    - kubernetes-cli-tools
+    - krr
+
+# krr: CPU/memory requests and limits recommendations from Prometheus usage
+- name: Install krr
+  community.general.homebrew:
+    name: robusta-dev/krr/krr
+    state: present
+  tags:
+    - install
+    - kubernetes-cli-tools
+    - krr
+
 - name: Install kubelogin (OIDC login plugin for kubectl)
   community.general.homebrew:
     name: kubelogin

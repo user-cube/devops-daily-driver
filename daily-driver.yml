@@ -55,6 +55,8 @@
         - golang-tools
         - cicd
         - kubernetes
+        - node
+        - ios
 
     - role: virtualization
       tags:

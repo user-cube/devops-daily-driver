@@ -11,7 +11,9 @@
 
 - name: Install golang tools
   community.general.homebrew:
-    name: goreleaser
+    name:
+      - goreleaser
+      - golangci-lint
     state: present
   tags:
     - install
