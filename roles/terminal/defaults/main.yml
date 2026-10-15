@@ -18,3 +18,6 @@ tmux_plugins:
   - name: tmux-continuum
     repo: https://github.com/tmux-plugins/tmux-continuum.git
     version: 0698e8f4b17d6454c71bf5212895ec055c578da0
+  - name: tmux-fzf-url # ⌘U: open a URL from the pane
+    repo: https://github.com/wfxr/tmux-fzf-url.git
+    version: 7c4838e95fde660b7f2aaf514323ac8498e0d4f4

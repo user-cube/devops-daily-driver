@@ -1,7 +1,9 @@
 ---
-- name: Install tmux
+- name: Install tmux and tmux-fingers (⌘Y, copy with hints)
   community.general.homebrew:
-    name: tmux
+    name:
+      - tmux
+      - tmux-fingers
     state: present
   tags:
     - install
@@ -9,7 +11,7 @@
     - tmux
     - aerospace
 
-# Session persistence (tmux-resurrect + tmux-continuum), pinned to a commit.
+# tmux plugins (tmux-resurrect, tmux-continuum, tmux-fzf-url), pinned to a commit.
 # tmux.conf in dotfiles loads them with run-shell.
 - name: Install tmux plugins at pinned commits
   ansible.builtin.git:
