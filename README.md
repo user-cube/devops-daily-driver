@@ -237,7 +237,7 @@ shortcuts (⌘T, ⌘⇧←/→, ⌘1–9, ⌘D, ⌘W, ⌘⇧S for sessions). The
 the persistent `main` session; extra windows get throwaway sessions. ⌘O opens any repo
 under `~/work` as a session, ⌘G opens lazygit in a popup, ⌘⇧G a side-by-side diff of uncommitted changes
 ([lumen](https://github.com/jnsahaj/lumen), from `custom_user_tools`), ⌘E the yazi file
-manager, ⌘⇧L lazydocker and ⌘K k9s. Sessions survive reboots
+manager, ⌘⇧L lazydocker, ⌘K k9s and ⌘J a persistent scratch terminal. Sessions survive reboots
 via tmux-resurrect + tmux-continuum, cloned by the playbook at pinned commits
 (`tmux_plugins` in `roles/terminal/defaults/main.yml`) into `~/.config/tmux/plugins`. Config:
 dotfiles `.config/tmux/tmux.conf`. tmux is installed by the `terminal` and
