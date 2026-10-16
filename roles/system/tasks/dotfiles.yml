@@ -87,6 +87,17 @@
     - dotfiles
     - install
 
+# Claude Code: settings, global instructions and hooks. The repo keeps them in
+# claude/, not .claude/, which Claude Code would read as the repo's own settings.
+- name: Sync dotfiles claude to ~/.claude
+  ansible.posix.synchronize:
+    src: "{{ dotfiles_dest }}/claude/"
+    dest: "{{ home_dir }}/.claude/"
+    delete: false
+  tags:
+    - dotfiles
+    - install
+
 # .gitconfig runs this binary on every commit (hook.commit-msg-go), so it has to
 # exist before the first commit. dev-tools installs go too, but runs after this.
 - name: Install go (builds the commit-msg hook)
