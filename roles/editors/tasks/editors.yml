@@ -18,7 +18,10 @@
 
 - name: Install Neovim
   community.general.homebrew:
-    name: neovim
+    name:
+      - neovim
+      # nvim-treesitter (main branch) compiles its parsers with it
+      - tree-sitter-cli
     state: present
   tags:
     - install
