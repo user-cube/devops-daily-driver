@@ -87,6 +87,28 @@
     - dotfiles
     - install
 
+# .gitconfig runs this binary on every commit (hook.commit-msg-go), so it has to
+# exist before the first commit. dev-tools installs go too, but runs after this.
+- name: Install go (builds the commit-msg hook)
+  community.general.homebrew:
+    name: go
+    state: present
+  tags:
+    - dotfiles
+    - install
+
+- name: Build the commit-msg hook
+  ansible.builtin.shell: |
+    [ commit-msg -nt commit-msg.go ] && exit 0
+    /opt/homebrew/bin/go build -o commit-msg commit-msg.go && echo built
+  args:
+    chdir: "{{ home_dir }}/git_hooks/go/commit-msg"
+  register: commit_msg_build
+  changed_when: "'built' in commit_msg_build.stdout"
+  tags:
+    - dotfiles
+    - install
+
 - name: Check which gitconfig files exist in dotfiles
   ansible.builtin.stat:
     path: "{{ dotfiles_dest }}/{{ item }}"
