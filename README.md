@@ -152,6 +152,8 @@ install_gcp: false
 install_kubelogin: false   # OIDC login plugin for kubectl
 install_node: false        # yarn, corepack
 install_ios: false         # xcodegen, ldid, zsign, dpkg (sign iOS apps outside the App Store)
+install_tfsec: false       # Terraform security scanner (trivy config covers it)
+install_helmfile: false    # declarative helm releases (ArgoCD deploys the charts instead)
 
 # Dotfiles
 dotfiles_repo: "https://github.com/your-user/dotfiles.git"

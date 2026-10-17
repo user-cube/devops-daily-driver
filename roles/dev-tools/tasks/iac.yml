@@ -12,11 +12,20 @@
   community.general.homebrew:
     name:
       - terraform-docs
-      - tfsec
       - terraform-ls
       - tenv
       - ansible-lint
     state: present
+  tags:
+    - install
+    - iac
+    - terraform
+
+- name: Install tfsec (optional; trivy config covers it)
+  community.general.homebrew:
+    name: tfsec
+    state: present
+  when: install_tfsec | bool
   tags:
     - install
     - iac

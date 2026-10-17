@@ -25,11 +25,20 @@
       - kubectl
       - helm
       - helm-docs
-      - helmfile
       - kyverno
       - kubeconform
       - kubecolor
+      - dyff # YAML diff by structure: helm template before / after a values change
     state: present
+  tags:
+    - install
+    - kubernetes-cli-tools
+
+- name: Install helmfile (optional)
+  community.general.homebrew:
+    name: helmfile
+    state: present
+  when: install_helmfile | bool
   tags:
     - install
     - kubernetes-cli-tools

@@ -3,3 +3,5 @@
 install_kubelogin: false # OIDC login plugin for kubectl (kubectl oidc-login)
 install_node: false # yarn, corepack
 install_ios: false # xcodegen, and ldid/zsign/dpkg to sign iOS apps (.ipa) outside the App Store
+install_tfsec: false # Terraform security scanner; trivy (cicd) covers it: trivy config .
+install_helmfile: false # declarative helm releases; ArgoCD deploys the charts instead

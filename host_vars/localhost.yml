@@ -8,6 +8,8 @@ install_gcp: false
 install_kubelogin: false
 install_node: false
 install_ios: false
+install_tfsec: false
+install_helmfile: false
 
 # Dotfiles
 dotfiles_repo: "https://github.com/user-cube/dotfiles.git"

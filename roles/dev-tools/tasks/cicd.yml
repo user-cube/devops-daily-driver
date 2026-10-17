@@ -5,6 +5,7 @@
       - trivy
       - argocd
       - ncc
+      - actionlint # GitHub Actions workflows; also a global pre-commit hook (dotfiles)
     state: present
   tags:
     - install
