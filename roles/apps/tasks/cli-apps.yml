@@ -4,7 +4,6 @@
     name:
       - fzf
       - zoxide
-      - atuin # shell history search on ctrl-r (dotfiles .zshrc)
     state: present
   tags:
     - install
