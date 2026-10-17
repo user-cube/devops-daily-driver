@@ -120,6 +120,20 @@
     - dotfiles
     - install
 
+# local-backup / local-restore (Bitwarden), and the local-restore tag below.
+# Rebuilt when any .go file is newer than the binary.
+- name: Build local-files
+  ansible.builtin.shell: |
+    [ -x local-files ] && [ -z "$(find . -name '*.go' -newer local-files)" ] && exit 0
+    /opt/homebrew/bin/go build -o local-files . && echo built
+  args:
+    chdir: "{{ home_dir }}/.config/dotfiles/local-files"
+  register: local_files_build
+  changed_when: "'built' in local_files_build.stdout"
+  tags:
+    - dotfiles
+    - install
+
 - name: Check which gitconfig files exist in dotfiles
   ansible.builtin.stat:
     path: "{{ dotfiles_dest }}/{{ item }}"

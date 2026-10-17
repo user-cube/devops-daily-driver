@@ -1,7 +1,7 @@
 ---
 # Restore the per-machine files (~/.zshrc.local, ~/.kube/config, …) from the
 # Bitwarden note "Local files (<machine>)" made by `local-backup` (dotfiles
-# .config/dotfiles/local-files.sh). Existing files are never overwritten.
+# .config/dotfiles/local-files/, built by the dotfiles tasks). Existing files are never overwritten.
 # Tagged `never`; run it by hand on a new Mac, after a full run and a
 # `bw --regenerate-session-key` login:
 #   ansible-playbook daily-driver.yml --tags local-restore
@@ -41,7 +41,7 @@
     - name: Restore the files (existing ones are kept)
       ansible.builtin.command:
         argv:
-          - "{{ home_dir }}/.config/dotfiles/local-files.sh"
+          - "{{ home_dir }}/.config/dotfiles/local-files/local-files"
           - restore
           - "{{ local_files_machine | default('') }}"
       register: local_files_restore
