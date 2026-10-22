@@ -148,6 +148,20 @@
     - dotfiles
     - install
 
+# Claude Code's PreToolUse hook (claude/settings.json): until it is built,
+# Claude Code's Bash and Read tools are blocked. Rebuilt like local-files.
+- name: Build the Claude Code deny-sensitive-reads hook
+  ansible.builtin.shell: |
+    [ -x deny-sensitive-reads ] && [ -z "$(find . -name '*.go' -newer deny-sensitive-reads)" ] && exit 0
+    /opt/homebrew/bin/go build -o deny-sensitive-reads . && echo built
+  args:
+    chdir: "{{ home_dir }}/.claude/hooks/deny-sensitive-reads"
+  register: claude_hook_build
+  changed_when: "'built' in claude_hook_build.stdout"
+  tags:
+    - dotfiles
+    - install
+
 - name: Check which gitconfig files exist in dotfiles
   ansible.builtin.stat:
     path: "{{ dotfiles_dest }}/{{ item }}"
