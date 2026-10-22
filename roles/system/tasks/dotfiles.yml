@@ -34,20 +34,6 @@
     - install
     - aerospace
 
-# SketchyBar's app icon map is not in the dotfiles repo: it comes from the
-# sketchybar-app-font release of the installed font version (latest before the
-# font is installed, then replaced on the next run).
-- name: Download the SketchyBar app icon map
-  ansible.builtin.command: "{{ home_dir }}/.config/sketchybar/fetch-icon-map.sh"
-  register: icon_map_fetch
-  changed_when: "'downloaded' in icon_map_fetch.stdout"
-  notify:
-    - Reload sketchybar
-  tags:
-    - dotfiles
-    - install
-    - aerospace
-
 # ~/.ssh/config stays per machine (hosts, users, keys); only this Include line
 # is managed, at the top so its `Host *` defaults (ControlMaster) apply everywhere.
 - name: Ensure ~/.ssh exists
@@ -114,7 +100,7 @@
 
 # .gitconfig runs this binary on every commit (hook.commit-msg-go), so it has to
 # exist before the first commit. dev-tools installs go too, but runs after this.
-- name: Install go (builds the commit-msg hook)
+- name: Install go (builds the dotfiles Go tools)
   community.general.homebrew:
     name: go
     state: present
@@ -122,67 +108,17 @@
     - dotfiles
     - install
 
-- name: Build the commit-msg hook
-  ansible.builtin.shell: |
-    [ commit-msg -nt commit-msg.go ] && exit 0
-    /opt/homebrew/bin/go build -o commit-msg commit-msg.go && echo built
-  args:
-    chdir: "{{ home_dir }}/git_hooks/go/commit-msg"
-  register: commit_msg_build
-  changed_when: "'built' in commit_msg_build.stdout"
-  tags:
-    - dotfiles
-    - install
-
-# local-backup / local-restore (Bitwarden), and the local-restore tag below.
-# Rebuilt when any .go file is newer than the binary.
-- name: Build local-files
-  ansible.builtin.shell: |
-    [ -x local-files ] && [ -z "$(find . -name '*.go' -newer local-files)" ] && exit 0
-    /opt/homebrew/bin/go build -o local-files . && echo built
-  args:
-    chdir: "{{ home_dir }}/.config/dotfiles/local-files"
-  register: local_files_build
-  changed_when: "'built' in local_files_build.stdout"
-  tags:
-    - dotfiles
-    - install
-
-# SketchyBar's `checks` item (connectivity checks) runs this Go program.
-- name: Build the SketchyBar checks
-  ansible.builtin.shell: |
-    [ -x check ] && [ -z "$(find . -name '*.go' -newer check)" ] && exit 0
-    /opt/homebrew/bin/go build -o check . && echo built
-  args:
-    chdir: "{{ home_dir }}/.config/sketchybar/plugins/check"
-  register: sketchybar_check_build
-  changed_when: "'built' in sketchybar_check_build.stdout"
+# Everything after the files are in place, the same steps dotfiles-sync runs
+# (dotfiles .config/dotfiles/install.sh): build the Go tools (commit-msg hook,
+# local-files, SketchyBar checks, Claude Code hook: Claude Code's Bash and
+# Read are blocked until it is built), the SketchyBar icon map, the Hue VS Code
+# extension, and removing the files the repo no longer installs.
+- name: Build and install the dotfiles tools
+  ansible.builtin.command: "{{ home_dir }}/.config/dotfiles/install.sh"
+  register: dotfiles_install
+  changed_when: "dotfiles_install.stdout is search('^(built|removed|icon_map.sh: downloaded|hue: installed)', multiline=True)"
   notify:
     - Reload sketchybar
-  tags:
-    - dotfiles
-    - install
-
-# synchronize never deletes: the files the dotfiles repo no longer installs
-# are listed in its .config/dotfiles/obsolete
-- name: Remove files the dotfiles repo no longer installs
-  ansible.builtin.command: "{{ home_dir }}/.config/dotfiles/remove-obsolete.sh"
-  register: obsolete_files
-  changed_when: "'removed' in obsolete_files.stdout"
-  tags:
-    - dotfiles
-    - install
-
-# Claude Code's PreToolUse hook (claude/settings.json): until it is built,
-# Claude Code's Bash and Read tools are blocked. Rebuilt like local-files.
-- name: Build the Claude Code deny-sensitive-reads hook
-  ansible.builtin.shell: |
-    [ -x deny-sensitive-reads ] && [ -z "$(find . -name '*.go' -newer deny-sensitive-reads)" ] && exit 0
-    /opt/homebrew/bin/go build -o deny-sensitive-reads . && echo built
-  args:
-    chdir: "{{ home_dir }}/.claude/hooks/deny-sensitive-reads"
-  register: claude_hook_build
-  changed_when: "'built' in claude_hook_build.stdout"
   tags:
     - dotfiles
     - install
