@@ -34,6 +34,20 @@
     - install
     - aerospace
 
+# SketchyBar's app icon map is not in the dotfiles repo: it comes from the
+# sketchybar-app-font release of the installed font version (latest before the
+# font is installed, then replaced on the next run).
+- name: Download the SketchyBar app icon map
+  ansible.builtin.command: "{{ home_dir }}/.config/sketchybar/fetch-icon-map.sh"
+  register: icon_map_fetch
+  changed_when: "'downloaded' in icon_map_fetch.stdout"
+  notify:
+    - Reload sketchybar
+  tags:
+    - dotfiles
+    - install
+    - aerospace
+
 # ~/.ssh/config stays per machine (hosts, users, keys); only this Include line
 # is managed, at the top so its `Host *` defaults (ControlMaster) apply everywhere.
 - name: Ensure ~/.ssh exists
