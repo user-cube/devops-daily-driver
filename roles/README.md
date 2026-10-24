@@ -14,7 +14,7 @@ own README.
 | `azure` | `azure` | azure-cli | `install_azure` (default false) |
 | `gcp` | `gcp` | google-cloud-sdk | `install_gcp` (default false) |
 | [`dev-tools`](dev-tools/README.md) | `git-tools` / `gh-cli`, `golang`, `cicd`, `kubernetes`, `iac`, `node`, `ios` | git, GPG, gh, glab, Go, CI/CD, Kubernetes, Terraform/OpenTofu, secrets tools | `krew_plugins`; `install_kubelogin`, `install_node`, `install_ios`, `install_tfsec`, `install_helmfile` (default false) |
-| `virtualization` | `virtualization` | Docker CLI, Colima (a stopped `work` profile), Buildx, hadolint, lazydocker | |
+| `virtualization` | `virtualization` | Docker CLI, Colima (a stopped `work` profile), Buildx, hadolint, dive, lazydocker | |
 | `editors` | `editors` | VS Code, JetBrains, Neovim, Claude Code, rtk | |
 | [`terminal`](terminal/README.md) | `terminal`, `ghostty`, `zsh`, `fonts`, `nvim` | tmux and its plugins, Ghostty, Oh My Zsh + Powerlevel10k + zsh plugins, pyenv, pipx, nvm, fonts | `zsh_plugins`, `tmux_plugins`, fonts |
 | `custom-tools` | `custom-tools`, `demo` | your own taps, formulae and casks | `custom_user_taps`, `custom_user_tools`, `custom_user_casks` |
