@@ -1,0 +1,25 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "description": "Only the zsh and tmux plugins pinned to a commit: Dependabot keeps the Actions and pip up to date",
+  "enabledManagers": ["custom.regex"],
+  "schedule": ["* * 1,15 * *"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "zsh_plugins / tmux_plugins: repo + version (a commit), bumped to the newest commit on master",
+      "managerFilePatterns": ["/^roles/terminal/defaults/main\\.yml$/"],
+      "matchStrings": [
+        "repo: (?<depName>https://github\\.com/\\S+)\\s+version: (?<currentDigest>[0-9a-f]{40})"
+      ],
+      "datasourceTemplate": "git-refs",
+      "currentValueTemplate": "master"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": ["custom.regex"],
+      "groupName": "zsh and tmux plugins"
+    }
+  ]
+}

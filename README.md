@@ -391,3 +391,10 @@ ansible-playbook --syntax-check daily-driver.yml
 
 `.ansible-lint` carries a `skip_list` of rules that are deliberately deferred
 rather than disabled; each entry is commented with what it covers.
+
+Updates: Dependabot keeps the Actions and pip requirements current. The zsh and
+tmux plugins pinned to a commit (`zsh_plugins` and `tmux_plugins` in
+`roles/terminal/defaults/main.yml`) are Renovate's (`renovate.json`): on the 1st
+and 15th it opens one PR moving them to the newest commit on master. It needs
+the [Renovate GitHub app](https://github.com/apps/renovate) on this repo.
+`plugins-outdated` in dotfiles shows the same from a shell.
