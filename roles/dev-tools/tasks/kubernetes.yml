@@ -29,6 +29,9 @@
       - kubeconform
       - kubecolor
       - dyff # YAML diff by structure: helm template before / after a values change
+      - popeye # cluster sanitizer: missing limits / probes, latest tags, orphans
+      - pluto # deprecated / removed apiVersions, in manifests and Helm releases
+      - logcli # LogQL against Loki (the dotfiles' logcli port-forwards to it)
     state: present
   tags:
     - install

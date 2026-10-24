@@ -5,7 +5,7 @@
 | `git.yml` | `git-tools`, `gh-cli` | git tools, gnupg + pinentry-mac (writes `~/.gnupg/gpg-agent.conf`), gh, glab |
 | `golang.yml` | `golang`, `golang-tools` | Go and Go tools |
 | `cicd.yml` | `cicd` | CI/CD tools |
-| `kubernetes.yml` | `kubernetes`, `cluster-visualization`, `kubernetes-cli-tools` | Headlamp, Freelens, k9s, stern, kubectl, helm, helm-docs, kyverno, kubeconform, kubecolor, dyff, krr; krew with the `krew_plugins` (neat, tree, view-secret, who-can); helmfile and kubelogin when enabled |
+| `kubernetes.yml` | `kubernetes`, `cluster-visualization`, `kubernetes-cli-tools` | Headlamp, Freelens, k9s, stern, kubectl, helm, helm-docs, kyverno, kubeconform, kubecolor, dyff, popeye, pluto, logcli, krr; krew with the `krew_plugins` (neat, tree, view-secret, who-can); helmfile and kubelogin when enabled |
 | `iac.yml` | `iac` | terraform-docs, terraform-ls, tenv, ansible-lint, tflint, the OpenTofu language server; age, sops, bitwarden-cli; tfsec when enabled |
 | `node.yml` | `node` | yarn, corepack, when enabled |
 | `ios.yml` | `ios` | xcodegen, ldid, zsign, dpkg (signing iOS apps outside the App Store), when enabled |
