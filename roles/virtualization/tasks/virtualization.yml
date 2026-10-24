@@ -10,6 +10,7 @@
       - qemu
       - lima-additional-guestagents
       - hadolint
+      - dive # an image's layers and what each one adds (k9s Ctrl-I on a container)
     state: present
 
 # The 'work' profile is only created (first run); it is never started on later

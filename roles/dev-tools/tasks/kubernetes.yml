@@ -62,6 +62,27 @@
     - kubernetes-cli-tools
     - krr
 
+# krew: kubectl's plugin manager. Its plugins go to ~/.krew/bin, which the
+# dotfiles .zshrc puts on PATH (krew_plugins in defaults/main.yml)
+- name: Install krew
+  community.general.homebrew:
+    name: krew
+    state: present
+  tags:
+    - install
+    - kubernetes-cli-tools
+    - krew
+
+- name: Install kubectl plugins with krew
+  ansible.builtin.command: kubectl krew install {{ item }}
+  args:
+    creates: "{{ lookup('env', 'HOME') }}/.krew/store/{{ item }}"
+  loop: "{{ krew_plugins }}"
+  tags:
+    - install
+    - kubernetes-cli-tools
+    - krew
+
 - name: Install kubelogin (OIDC login plugin for kubectl)
   community.general.homebrew:
     name: kubelogin

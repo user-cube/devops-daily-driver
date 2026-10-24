@@ -130,7 +130,7 @@ for:
 `kubernetes-cli-tools`, `iac`, `terraform`, `opentofu`, `secrets`, `ai`, `linters`,
 `virtualization`, `colima`, `docker-buildx`, `editors`, `terminal`, `ghostty`, `zsh`,
 `pyenv`, `pipx`, `nvm`, `fonts`, `nvim`, `aws`, `azure`, `gcp`, `custom-tools`,
-`demo`, `menubar`, `node`, `ios`, `krr`.
+`demo`, `menubar`, `node`, `ios`, `krr`, `krew`.
 
 **Feature tags** cut across roles: `aerospace` runs everything for the window
 manager setup (AeroSpace, borders, SketchyBar, its fonts, macOS Spaces/menu bar

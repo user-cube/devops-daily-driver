@@ -5,3 +5,10 @@ install_node: false # yarn, corepack
 install_ios: false # xcodegen, and ldid/zsign/dpkg to sign iOS apps (.ipa) outside the App Store
 install_tfsec: false # Terraform security scanner; trivy (cicd) covers it: trivy config .
 install_helmfile: false # declarative helm releases; ArgoCD deploys the charts instead
+
+# kubectl plugins installed with krew (kubectl <name>)
+krew_plugins:
+  - neat # YAML without managedFields, status and defaults (k9s Ctrl-N)
+  - tree # a resource's children: Deployment -> ReplicaSets -> Pods
+  - view-secret # a Secret's values, decoded
+  - who-can # who may do a verb on a resource (RBAC)
