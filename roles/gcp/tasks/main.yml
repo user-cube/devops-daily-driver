@@ -5,6 +5,7 @@
     state: present
   when: install_gcp | bool
   tags:
+    - taps # the CI check mode taps them for real first (check-mode.yml)
     - install
     - gcp
 

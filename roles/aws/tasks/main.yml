@@ -17,6 +17,7 @@
     state: present
   when: install_aws | bool
   tags:
+    - taps # the CI check mode taps them for real first (check-mode.yml)
     - install
     - aws
 
@@ -26,6 +27,7 @@
   changed_when: "'Trusted ' in granted_trust.stdout"
   when: install_aws | bool
   tags:
+    - taps
     - install
     - aws
 

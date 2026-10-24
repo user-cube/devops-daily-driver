@@ -51,6 +51,7 @@
     name: robusta-dev/krr
     state: present
   tags:
+    - taps # the CI check mode taps them for real first (check-mode.yml)
     - install
     - kubernetes-cli-tools
     - krr

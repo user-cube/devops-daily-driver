@@ -4,6 +4,7 @@
     name: terraform-linters/tap
     state: present
   tags:
+    - taps # the CI check mode taps them for real first (check-mode.yml)
     - install
     - iac
     - terraform
@@ -36,6 +37,7 @@
   register: tflint_trust
   changed_when: "'Trusted ' in tflint_trust.stdout"
   tags:
+    - taps
     - install
     - iac
     - terraform

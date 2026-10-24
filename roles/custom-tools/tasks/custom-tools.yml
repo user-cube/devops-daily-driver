@@ -14,6 +14,7 @@
     name: "{{ custom_user_taps }}"
     state: present
   tags:
+    - taps # the CI check mode taps them for real first (check-mode.yml)
     - custom-tools
     - install
 
@@ -24,6 +25,7 @@
   changed_when: "'Trusted ' in custom_tools_trust.stdout"
   when: custom_user_tools | length > 0
   tags:
+    - taps
     - custom-tools
     - install
 
@@ -42,6 +44,7 @@
   changed_when: "'Trusted ' in custom_casks_trust.stdout"
   when: custom_user_casks | length > 0
   tags:
+    - taps
     - custom-tools
     - install
 

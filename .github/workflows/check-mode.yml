@@ -48,6 +48,12 @@ jobs:
       - name: Clone the dotfiles
         run: git clone --depth 1 https://github.com/user-cube/dotfiles.git ~/dotfiles
 
+      # In check mode a tap isn't added, and installing a formula from it then
+      # fails ("requires the tap"): add the taps (and trust their formulae) for
+      # real first. Only them: the `taps` tag
+      - name: Taps, for real
+        run: ansible-playbook daily-driver.yml --tags taps -e mac_sudo_password=""
+
       # No sudo password: the tasks that need one (casks with their own
       # installers, Touch ID) are skipped, as when it's left empty
       - name: ansible-playbook --check

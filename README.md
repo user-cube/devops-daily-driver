@@ -136,6 +136,9 @@ for:
 **Feature tags** cut across roles: `aerospace` runs everything for the window
 manager setup (AeroSpace, borders, SketchyBar, its fonts, macOS Spaces/menu bar
 tweaks, dotfiles sync) and ends with the interactive `permissions` guide.
+`taps` adds only the Homebrew taps and trusts their formulae: CI runs it for
+real before the whole playbook in `--check` (a tap isn't added in check mode,
+and installing from it would then fail).
 
 **By hand only** (tagged `never`, so a full run skips them): `permissions`,
 `raycast-import`, `local-restore`.
