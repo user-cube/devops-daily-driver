@@ -27,6 +27,15 @@
     - install
     - zsh
 
+- name: Install fzf-tab at a pinned commit
+  ansible.builtin.git:
+    repo: "{{ zsh_fzf_tab_repo }}"
+    dest: "{{ zsh_fzf_tab_dest }}"
+    version: "{{ zsh_fzf_tab_version }}"
+  tags:
+    - install
+    - zsh
+
 - name: Install pyenv
   community.general.homebrew:
     name: pyenv

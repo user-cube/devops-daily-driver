@@ -2,6 +2,11 @@
 home_dir: "{{ lookup('env', 'HOME') }}"
 zsh_theme_repo: "https://github.com/romkatv/powerlevel10k.git"
 zsh_theme_dest: "{{ home_dir }}/powerlevel10k"
+# fzf-tab (Tab completes in an fzf list), an Oh My Zsh custom plugin: .zshrc in
+# dotfiles loads it when this folder exists. Pinned to v1.3.0
+zsh_fzf_tab_repo: "https://github.com/Aloxaf/fzf-tab.git"
+zsh_fzf_tab_version: d7e0234614dbe5369fdd760907d12c0e05a4dccc
+zsh_fzf_tab_dest: "{{ home_dir }}/.oh-my-zsh/custom/plugins/fzf-tab"
 fonts_base_url: "https://github.com/romkatv/powerlevel10k-media/raw/master"
 fonts_dest_dir: "{{ home_dir }}/Library/Fonts"
 fonts_meslo_files:
