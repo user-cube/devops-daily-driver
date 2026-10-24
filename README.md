@@ -413,6 +413,9 @@ ansible-playbook --syntax-check daily-driver.yml
 `.ansible-lint` carries a `skip_list` of rules that are deliberately deferred
 rather than disabled; each entry is commented with what it covers.
 
+CI keeps the Galaxy collections in a cache keyed on `requirements.yml`, so it
+only downloads them when that file changes: Galaxy now and then answers 500.
+
 Updates are Renovate's (`renovate.json`, the [Renovate GitHub app](https://github.com/apps/renovate)
 on this repo), on the 1st and 15th:
 
