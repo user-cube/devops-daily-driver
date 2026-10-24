@@ -11,10 +11,10 @@ zsh_plugins:
     version: 85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5
   - name: zsh-syntax-highlighting # 0.8.0 + 4
     repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
-    version: 1d85c692615a25fe2293bdd44b34c217d5d2bf04
+    version: e6683f20e5c38d3e5447f45845d04ddda75d0f23
   - name: fzf-tab # v1.3.0; Tab completes in an fzf list (loaded once this folder exists)
     repo: https://github.com/Aloxaf/fzf-tab.git
-    version: d7e0234614dbe5369fdd760907d12c0e05a4dccc
+    version: 24105b15714bfec37989ed5c5b6e60f572253019
 fonts_base_url: "https://github.com/romkatv/powerlevel10k-media/raw/master"
 fonts_dest_dir: "{{ home_dir }}/Library/Fonts"
 fonts_meslo_files:
