@@ -2,11 +2,19 @@
 home_dir: "{{ lookup('env', 'HOME') }}"
 zsh_theme_repo: "https://github.com/romkatv/powerlevel10k.git"
 zsh_theme_dest: "{{ home_dir }}/powerlevel10k"
-# fzf-tab (Tab completes in an fzf list), an Oh My Zsh custom plugin: .zshrc in
-# dotfiles loads it when this folder exists. Pinned to v1.3.0
-zsh_fzf_tab_repo: "https://github.com/Aloxaf/fzf-tab.git"
-zsh_fzf_tab_version: d7e0234614dbe5369fdd760907d12c0e05a4dccc
-zsh_fzf_tab_dest: "{{ home_dir }}/.oh-my-zsh/custom/plugins/fzf-tab"
+# zsh plugins: cloned at pinned commits into Oh My Zsh's custom/plugins, where
+# the plugins=(...) list of .zshrc in dotfiles finds them
+zsh_plugins_dir: "{{ home_dir }}/.oh-my-zsh/custom/plugins"
+zsh_plugins:
+  - name: zsh-autosuggestions # v0.7.1 + 6
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    version: 85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5
+  - name: zsh-syntax-highlighting # 0.8.0 + 4
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
+    version: 1d85c692615a25fe2293bdd44b34c217d5d2bf04
+  - name: fzf-tab # v1.3.0; Tab completes in an fzf list (loaded once this folder exists)
+    repo: https://github.com/Aloxaf/fzf-tab.git
+    version: d7e0234614dbe5369fdd760907d12c0e05a4dccc
 fonts_base_url: "https://github.com/romkatv/powerlevel10k-media/raw/master"
 fonts_dest_dir: "{{ home_dir }}/Library/Fonts"
 fonts_meslo_files:

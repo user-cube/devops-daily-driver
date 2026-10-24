@@ -17,21 +17,17 @@
     - install
     - zsh
 
-- name: Install zsh plugins
-  community.general.homebrew:
-    name:
-      - zsh-syntax-highlighting
-      - zsh-autosuggestions
-    state: present
-  tags:
-    - install
-    - zsh
-
-- name: Install fzf-tab at a pinned commit
+# zsh plugins (zsh-autosuggestions, zsh-syntax-highlighting, fzf-tab), pinned
+# to a commit, into Oh My Zsh's custom/plugins (not Homebrew: .zshrc loads them
+# as Oh My Zsh plugins, in its order)
+- name: Install zsh plugins at pinned commits
   ansible.builtin.git:
-    repo: "{{ zsh_fzf_tab_repo }}"
-    dest: "{{ zsh_fzf_tab_dest }}"
-    version: "{{ zsh_fzf_tab_version }}"
+    repo: "{{ item.repo }}"
+    dest: "{{ zsh_plugins_dir }}/{{ item.name }}"
+    version: "{{ item.version }}"
+  loop: "{{ zsh_plugins }}"
+  loop_control:
+    label: "{{ item.name }}"
   tags:
     - install
     - zsh
