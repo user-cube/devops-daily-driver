@@ -62,7 +62,10 @@ ansible-playbook daily-driver.yml --check
 
 ```
 devops-daily-driver/
-├── .github/workflows/       # CI: yamllint, ansible-lint, syntax-check
+├── .github/
+│   ├── workflows/           # CI: yamllint, ansible-lint, syntax-check
+│   └── dependabot.yml       # Actions and pip updates
+├── renovate.json            # updates of the plugins pinned to a commit
 ├── .ansible-lint            # Rule config, with deferred rules documented
 ├── .yamllint                # Line length, ignores .ansible/
 ├── ansible.cfg              # Inventory path, deprecation_warnings
@@ -71,19 +74,24 @@ devops-daily-driver/
 ├── requirements.yml         # Galaxy collections
 ├── host_vars/
 │   └── localhost.yml        # Machine-specific variables (cloud providers, etc.)
-└── roles/
-    ├── system/              # preflight, directories, dotfiles
-    ├── macos/               # dock, finder, keyboard shortcuts
-    ├── apps/                # ui-apps, cli-apps, docs, networking
-    ├── dev-tools/           # git, gnupg, golang, cicd, kubernetes, iac
+├── scripts/
+│   └── brew-drift.sh        # Homebrew packages the playbook doesn't know about
+└── roles/                   # one README per role with more to it: roles/README.md
+    ├── system/              # preflight, directories, dotfiles, local-restore
+    ├── macos/               # dock, finder, keyboard, Touch ID, permissions guide
+    ├── apps/                # ui-apps, cli-apps, docs, networking, Raycast import
+    ├── dev-tools/           # git, gnupg, golang, cicd, kubernetes, iac, node, ios
     ├── virtualization/      # docker, colima, buildx (Homebrew)
     ├── editors/             # vscode, jetbrains, neovim, claude code, rtk
-    ├── terminal/            # ghostty, zsh, tmux, fonts, nvim
+    ├── terminal/            # ghostty, tmux + plugins, zsh + plugins, fonts, nvim
     ├── aws/                 # awscli, eksctl, granted
     ├── azure/               # azure-cli
     ├── gcp/                 # google-cloud-sdk
     └── custom-tools/        # custom taps and tools
 ```
+
+[`roles/README.md`](roles/README.md) has every role's task files, tags and
+variables.
 
 ## Run only specific roles (tags)
 
@@ -118,16 +126,20 @@ Tags come in two layers. **Role and area tags** are the ones you normally reach
 for:
 
 `system`, `preflight`, `directories`, `dotfiles`, `macos`, `dock`, `finder`,
-`keyboard`, `apps`, `ui-apps`, `cli-apps`, `logitech`, `networking`,
-`documentation-tools`, `dev-tools`, `git-tools`, `gh-cli`, `glab`, `golang`,
-`cicd`, `kubernetes`, `cluster-visualization`, `iac`, `terraform`, `opentofu`,
-`secrets`, `ai`, `linters`, `virtualization`, `colima`, `docker-buildx`, `editors`,
-`terminal`, `ghostty`, `zsh`, `pyenv`, `pipx`, `nvm`, `fonts`, `nvim`, `aws`, `azure`,
-`gcp`, `custom-tools`, `demo`, `menubar`, `node`, `ios`, `krr`.
+`keyboard`, `appearance`, `screenshots`, `touchid`, `apps`, `ui-apps`, `cli-apps`,
+`logitech`, `networking`, `documentation-tools`, `dev-tools`, `git-tools`, `gh-cli`,
+`glab`, `golang`, `golang-tools`, `cicd`, `kubernetes`, `cluster-visualization`,
+`kubernetes-cli-tools`, `iac`, `terraform`, `opentofu`, `secrets`, `ai`, `linters`,
+`virtualization`, `colima`, `docker-buildx`, `editors`, `terminal`, `ghostty`, `zsh`,
+`pyenv`, `pipx`, `nvm`, `fonts`, `nvim`, `aws`, `azure`, `gcp`, `custom-tools`,
+`demo`, `menubar`, `node`, `ios`, `krr`.
 
 **Feature tags** cut across roles: `aerospace` runs everything for the window
 manager setup (AeroSpace, borders, SketchyBar, its fonts, macOS Spaces/menu bar
 tweaks, dotfiles sync) and ends with the interactive `permissions` guide.
+
+**By hand only** (tagged `never`, so a full run skips them): `permissions`,
+`raycast-import`, `local-restore`.
 
 Individual packages also carry their own tag (`bat`, `jq`, `htop`, `k9s`, …), so
 you can install a single tool without running its whole role:
@@ -188,10 +200,14 @@ ansible-playbook daily-driver.yml --tags aws -e install_aws=true
 
 ## Dotfiles
 
-Clones the repository defined in `host_vars/localhost.yml` (macOS only), syncs `.config` to
-`~/.config`, copies `.zshrc` and `.p10k.zsh` to `~`, and copies any of `.gitconfig`,
-`.gitconfig-personal`, `.gitconfig-work` if present. Syncing `.config` reloads tmux,
-AeroSpace, borders and SketchyBar.
+Clones the repository defined in `host_vars/localhost.yml` (macOS only) and does
+what the dotfiles' `dotfiles-sync` does: syncs `.config` to `~/.config`, `git_hooks`
+to `~/git_hooks` and `claude` to `~/.claude`, includes the dotfiles ssh defaults
+from `~/.ssh/config`, copies `.zshrc`, `.p10k.zsh` and the gitconfigs
+(`.gitconfig-work` only when missing), then runs the dotfiles'
+`.config/dotfiles/install.sh` (Go tools, SketchyBar icon map, Hue, obsolete files).
+A change reloads tmux, AeroSpace, borders and SketchyBar. Details:
+[`roles/system/README.md`](roles/system/README.md).
 
 `~/.zshrc` is **overwritten** on every run. Anything specific to one machine (work-only
 tools, aliases) belongs in `~/.zshrc.local`, which `.zshrc` sources last and the
@@ -201,8 +217,14 @@ are sourced automatically (e.g. `bw.zsh`, the Bitwarden CLI wrapper, which needs
 any file: they are fetched from Bitwarden when the tool that needs them starts (see the
 Secrets section of the dotfiles README).
 
-Shell startup stays around 0.2 s: nvm loads on first use, `pyenv init` skips the rehash
-and tool completions are cached in `~/.cache/zsh` (regenerated when the tool is upgraded).
+Shell startup stays around 0.1 s: nvm loads on first use, `pyenv init` skips the rehash
+and the tool inits and completions are cached in `~/.cache/zsh` (regenerated when the
+tool is upgraded).
+
+The `zsh` tag installs Oh My Zsh, Powerlevel10k and the Oh My Zsh plugins the
+dotfiles `.zshrc` loads (zsh-autosuggestions, zsh-syntax-highlighting, fzf-tab),
+cloned at pinned commits into `~/.oh-my-zsh/custom/plugins` (`zsh_plugins`; see
+[`roles/terminal/README.md`](roles/terminal/README.md)).
 
 Other per-machine files, also never overwritten:
 
@@ -267,8 +289,9 @@ under `~/work` as a session, ⌘G opens lazygit in a popup, ⌘⇧G a side-by-si
 manager, ⌘⇧L lazydocker, ⌘K k9s and ⌘J a persistent scratch terminal. Sessions survive reboots
 via tmux-resurrect + tmux-continuum, cloned by the playbook at pinned commits
 (`tmux_plugins` in `roles/terminal/defaults/main.yml`) into `~/.config/tmux/plugins`. Config:
-dotfiles `.config/tmux/tmux.conf`. tmux is installed by the `terminal` and
-`aerospace` tags.
+dotfiles `.config/tmux/tmux.conf`; its README lists every shortcut and the ways
+to copy (⌘⇧C copies the last command's output, ⌘⇧↑ / ⌘⇧↓ move between commands).
+tmux is installed by the `terminal` and `aerospace` tags.
 
 ## Neovim
 
