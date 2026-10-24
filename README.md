@@ -423,7 +423,10 @@ syntax check can't: an undefined variable, a `when` on a missing result.
 rather than disabled; each entry is commented with what it covers.
 
 CI keeps the Galaxy collections in a cache keyed on `requirements.yml`, so it
-only downloads them when that file changes: Galaxy now and then answers 500.
+only downloads them when that file changes: Galaxy now and then answers 500,
+sometimes for hours. `scripts/install-collections.sh` downloads them, and when
+Galaxy fails installs the same versions from their GitHub repos
+(`ansible-collections/<name>` at the tag `<version>`).
 
 Updates are Renovate's (`renovate.json`, the [Renovate GitHub app](https://github.com/apps/renovate)
 on this repo), on the 1st and 15th:

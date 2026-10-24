@@ -41,7 +41,7 @@ jobs:
 
       - name: Install collections
         if: steps.galaxy.outputs.cache-hit != 'true'
-        run: ansible-galaxy collection install -r requirements.yml
+        run: scripts/install-collections.sh # Galaxy, else the same versions from GitHub
 
       # In check mode the clone task doesn't clone, and the tasks after it copy
       # from the clone: put it where the playbook would
