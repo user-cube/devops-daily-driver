@@ -1,2 +1,5 @@
 .ansible/
 *.retry
+# pytest
+__pycache__/
+.pytest_cache/

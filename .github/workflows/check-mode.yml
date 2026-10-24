@@ -1,0 +1,54 @@
+---
+# The whole playbook in --check mode on a clean macOS runner: catches what the
+# syntax check can't (an undefined variable, a `when` on a result that isn't
+# there, a module argument that fails) without changing the machine. Its own
+# workflow: it takes minutes, the lint seconds.
+name: Check mode
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: ansible-playbook --check (macOS)
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Install tooling
+        run: pip install -r requirements-ci.txt
+
+      - name: Cache collections
+        id: galaxy
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.ansible/collections
+          key: galaxy-${{ runner.os }}-${{ hashFiles('requirements.yml') }}
+
+      - name: Install collections
+        if: steps.galaxy.outputs.cache-hit != 'true'
+        run: ansible-galaxy collection install -r requirements.yml
+
+      # In check mode the clone task doesn't clone, and the tasks after it copy
+      # from the clone: put it where the playbook would
+      - name: Clone the dotfiles
+        run: git clone --depth 1 https://github.com/user-cube/dotfiles.git ~/dotfiles
+
+      # No sudo password: the tasks that need one (casks with their own
+      # installers, Touch ID) are skipped, as when it's left empty
+      - name: ansible-playbook --check
+        run: ansible-playbook daily-driver.yml --check -e mac_sudo_password=""

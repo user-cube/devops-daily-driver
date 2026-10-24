@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   lint:
-    name: yamllint + ansible-lint + syntax-check
+    name: yamllint + ansible-lint + syntax-check + pytest
     runs-on: ubuntu-latest
 
     steps:
@@ -46,7 +46,12 @@ jobs:
       - name: ansible-lint
         run: ansible-lint
 
-      # Catches undefined vars in task args and broken includes. The playbook
-      # itself only ever runs on macOS, so this is as far as CI can go.
+      # Catches undefined vars in task args and broken includes. The whole
+      # playbook runs in --check mode on macOS in check-mode.yml
       - name: Syntax check
         run: ansible-playbook --syntax-check daily-driver.yml
+
+      # tests/: the tags the README lists, the roles' READMEs, the pinned
+      # plugins and Renovate's regex for them, the pinned versions
+      - name: pytest
+        run: pytest tests/ -q

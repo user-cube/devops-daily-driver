@@ -62,7 +62,7 @@ ansible-playbook daily-driver.yml --check
 
 ```
 devops-daily-driver/
-├── .github/workflows/       # CI: yamllint, ansible-lint, syntax-check
+├── .github/workflows/       # CI: yamllint, ansible-lint, syntax-check, pytest; --check on macOS
 ├── renovate.json            # updates: Actions, CI lint tools, pinned plugins
 ├── .ansible-lint            # Rule config, with deferred rules documented
 ├── .yamllint                # Line length, ignores .ansible/
@@ -72,6 +72,7 @@ devops-daily-driver/
 ├── requirements.yml         # Galaxy collections
 ├── host_vars/
 │   └── localhost.yml        # Machine-specific variables (cloud providers, etc.)
+├── tests/                   # pytest: README, roles, pins and Renovate agree
 ├── scripts/
 │   └── brew-drift.sh        # Homebrew packages the playbook doesn't know about
 └── roles/                   # one README per role with more to it: roles/README.md
@@ -402,13 +403,21 @@ The playbook cannot automate these:
 
 ## Development
 
-Lint and validate before pushing — CI runs the same three checks:
+Lint, validate and test before pushing — CI runs the same:
 
 ```bash
 yamllint .
 ansible-lint
 ansible-playbook --syntax-check daily-driver.yml
+pytest tests/
 ```
+
+`tests/test_consistency.py` checks that the README lists the role and task file
+tags, every role has a row in `roles/README.md`, the plugins are pinned to a
+full commit and Renovate's regex finds each of them, and the Galaxy and CI
+versions are pinned. `.github/workflows/check-mode.yml` runs the whole playbook
+with `--check` on a clean macOS runner (no sudo password), catching what the
+syntax check can't: an undefined variable, a `when` on a missing result.
 
 `.ansible-lint` carries a `skip_list` of rules that are deliberately deferred
 rather than disabled; each entry is commented with what it covers.
