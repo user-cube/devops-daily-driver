@@ -3,16 +3,17 @@ home_dir: "{{ lookup('env', 'HOME') }}"
 zsh_theme_repo: "https://github.com/romkatv/powerlevel10k.git"
 zsh_theme_dest: "{{ home_dir }}/powerlevel10k"
 # zsh plugins: cloned at pinned commits into Oh My Zsh's custom/plugins, where
-# the plugins=(...) list of .zshrc in dotfiles finds them
+# the plugins=(...) list of .zshrc in dotfiles finds them. version: a commit on
+# master, which Renovate moves (no version in the comments: they would go stale)
 zsh_plugins_dir: "{{ home_dir }}/.oh-my-zsh/custom/plugins"
 zsh_plugins:
-  - name: zsh-autosuggestions # v0.7.1 + 6
+  - name: zsh-autosuggestions # suggests the rest of the line as you type
     repo: https://github.com/zsh-users/zsh-autosuggestions
     version: 85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5
-  - name: zsh-syntax-highlighting # 0.8.0 + 4
+  - name: zsh-syntax-highlighting # colors the command line
     repo: https://github.com/zsh-users/zsh-syntax-highlighting.git
     version: e6683f20e5c38d3e5447f45845d04ddda75d0f23
-  - name: fzf-tab # v1.3.0; Tab completes in an fzf list (loaded once this folder exists)
+  - name: fzf-tab # Tab completes in an fzf list (loaded once this folder exists)
     repo: https://github.com/Aloxaf/fzf-tab.git
     version: 24105b15714bfec37989ed5c5b6e60f572253019
 fonts_base_url: "https://github.com/romkatv/powerlevel10k-media/raw/master"
