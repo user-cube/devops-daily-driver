@@ -62,10 +62,8 @@ ansible-playbook daily-driver.yml --check
 
 ```
 devops-daily-driver/
-├── .github/
-│   ├── workflows/           # CI: yamllint, ansible-lint, syntax-check
-│   └── dependabot.yml       # Actions and pip updates
-├── renovate.json            # updates of the plugins pinned to a commit
+├── .github/workflows/       # CI: yamllint, ansible-lint, syntax-check
+├── renovate.json            # updates: Actions, CI lint tools, pinned plugins
 ├── .ansible-lint            # Rule config, with deferred rules documented
 ├── .yamllint                # Line length, ignores .ansible/
 ├── ansible.cfg              # Inventory path, deprecation_warnings
@@ -415,9 +413,13 @@ ansible-playbook --syntax-check daily-driver.yml
 `.ansible-lint` carries a `skip_list` of rules that are deliberately deferred
 rather than disabled; each entry is commented with what it covers.
 
-Updates: Dependabot keeps the Actions and pip requirements current. The zsh and
-tmux plugins pinned to a commit (`zsh_plugins` and `tmux_plugins` in
-`roles/terminal/defaults/main.yml`) are Renovate's (`renovate.json`): on the 1st
-and 15th it opens one PR moving them to the newest commit on master. It needs
-the [Renovate GitHub app](https://github.com/apps/renovate) on this repo.
-`plugins-outdated` in dotfiles shows the same from a shell.
+Updates are Renovate's (`renovate.json`, the [Renovate GitHub app](https://github.com/apps/renovate)
+on this repo), on the 1st and 15th:
+
+- the GitHub Actions (pinned to a commit, with the version in a comment)
+- the CI lint tools in `requirements-ci.txt`
+- the zsh and tmux plugins pinned to a commit (`zsh_plugins` and `tmux_plugins` in
+  `roles/terminal/defaults/main.yml`), in one PR, moved to the newest commit on
+  master; `plugins-outdated` in dotfiles shows the same from a shell
+
+The Ansible Galaxy collections in `requirements.yml` are not updated automatically.

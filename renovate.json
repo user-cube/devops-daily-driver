@@ -1,8 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "description": "Only the zsh and tmux plugins pinned to a commit: Dependabot keeps the Actions and pip up to date",
-  "enabledManagers": ["custom.regex"],
+  "description": "The GitHub Actions, the CI lint tools (requirements-ci.txt) and the zsh and tmux plugins pinned to a commit",
+  "enabledManagers": ["github-actions", "pip_requirements", "custom.regex"],
   "schedule": ["* * 1,15 * *"],
   "customManagers": [
     {

@@ -1,4 +1,4 @@
-# Lint tooling for CI — pinned; bumped by Dependabot
+# Lint tooling for CI — pinned; bumped by Renovate (renovate.json)
 ansible-core==2.21.4
 ansible-lint==26.9.0
 yamllint==1.38.0
