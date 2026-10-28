@@ -309,7 +309,7 @@ signing is less work than maintaining a GPG keyring — git has supported it sin
 2.34 and there is no key material on disk:
 
 ```ini
-# ~/.gitconfig-personal
+# ~/.gitconfig-personal-github (and ~/.gitconfig-personal-gitlab, with the GitLab noreply address)
 [user]
     email = <id>+<user>@users.noreply.github.com
     signingkey = key::ssh-ed25519 AAAA...

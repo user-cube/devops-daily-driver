@@ -128,7 +128,9 @@
     path: "{{ dotfiles_dest }}/{{ item }}"
   register: gitconfig_files_check
   loop:
-    - .gitconfig-personal
+    - .gitconfig-hooks
+    - .gitconfig-personal-github
+    - .gitconfig-personal-gitlab
     - .gitconfig-work
     - .gitconfig
   tags:
