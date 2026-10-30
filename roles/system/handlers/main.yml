@@ -23,3 +23,15 @@
   register: tmux_reload
   changed_when: "'reloaded' in tmux_reload.stdout"
   failed_when: false
+
+# Rex reads ~/.config/rex/init.lua (dotfiles .config/rex). No-op when Rex isn't
+# installed or its server isn't running; rex is only on the PATH inside Rex.
+- name: Reload Rex config
+  ansible.builtin.shell: |
+    rex="$HOME/Library/Application Support/com.superlogical.rex/RexServer/Versions/Current/Rex Server.app/Contents/MacOS/rex"
+    if [ -x "$rex" ] && "$rex" --autostart=false config reload >/dev/null 2>&1; then
+      echo reloaded
+    fi
+  register: rex_reload
+  changed_when: "'reloaded' in rex_reload.stdout"
+  failed_when: false

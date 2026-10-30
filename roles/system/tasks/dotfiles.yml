@@ -26,6 +26,7 @@
     delete: false
   notify:
     - Reload tmux config
+    - Reload Rex config
     - Reload AeroSpace
     - Restart borders
     - Reload sketchybar
