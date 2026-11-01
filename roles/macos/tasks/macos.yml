@@ -7,7 +7,7 @@
         domain: com.apple.dock
         key: tilesize
         type: float
-        value: 22
+        value: 21
       notify: Restart Dock
 
     - name: Disable Dock magnification
