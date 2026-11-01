@@ -6,3 +6,28 @@ directories_to_create:
   - personal
   - work
   - hooks
+
+# Third-party Homebrew taps: added and trusted once, in tasks/taps.yml. Trust only
+# what is installed from them (full tap/formula names), not the whole tap.
+# A new tap goes here, not in the role that installs from it.
+brew_taps:
+  - name: common-fate/granted
+    enabled: "{{ install_aws | bool }}"
+    formulae: [common-fate/granted/granted]
+    casks: []
+  - name: google/cloud-sdk
+    enabled: "{{ install_gcp | bool }}"
+    formulae: []
+    casks: []
+  - name: terraform-linters/tap
+    enabled: true
+    formulae: []
+    casks: [terraform-linters/tap/tflint]
+  - name: robusta-dev/krr
+    enabled: true
+    formulae: [robusta-dev/krr/krr]
+    casks: []
+  - name: FelixKratz/formulae
+    enabled: true
+    formulae: "{{ felixkratz_tools | map('regex_replace', '^', 'felixkratz/formulae/') | list }}"
+    casks: []

@@ -51,27 +51,6 @@
     - cli-apps
     - aerospace
 
-- name: Tap FelixKratz formulae (JankyBorders, SketchyBar)
-  community.general.homebrew_tap:
-    name: FelixKratz/formulae
-    state: present
-  tags:
-    - taps # the CI check mode taps them for real first (check-mode.yml)
-    - install
-    - cli-apps
-    - aerospace
-
-- name: Trust borders and sketchybar from FelixKratz tap
-  ansible.builtin.command: brew trust --formula felixkratz/formulae/{{ item }}
-  loop: "{{ felixkratz_tools }}"
-  register: felixkratz_trust
-  changed_when: "'Trusted ' in felixkratz_trust.stdout"
-  tags:
-    - taps
-    - install
-    - cli-apps
-    - aerospace
-
 - name: Install borders (focused window highlight) and sketchybar (status bar)
   community.general.homebrew:
     name: "{{ felixkratz_tools | map('regex_replace', '^', 'felixkratz/formulae/') | list }}"

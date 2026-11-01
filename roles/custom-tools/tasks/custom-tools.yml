@@ -9,42 +9,11 @@
     - demo
     - custom-tools
 
-- name: Add tap repositories for custom tools
-  community.general.homebrew_tap:
-    name: "{{ custom_user_taps }}"
-    state: present
-  tags:
-    - taps # the CI check mode taps them for real first (check-mode.yml)
-    - custom-tools
-    - install
-
-- name: Trust custom tools from user taps
-  ansible.builtin.command: >-
-    brew trust --formula {{ custom_user_tools | join(' ') }}
-  register: custom_tools_trust
-  changed_when: "'Trusted ' in custom_tools_trust.stdout"
-  when: custom_user_tools | length > 0
-  tags:
-    - taps
-    - custom-tools
-    - install
-
 - name: Install custom tools
   community.general.homebrew:
     name: "{{ custom_user_tools }}"
     state: present
   tags:
-    - custom-tools
-    - install
-
-- name: Trust custom casks from user taps
-  ansible.builtin.command: >-
-    brew trust --cask {{ custom_user_casks | join(' ') }}
-  register: custom_casks_trust
-  changed_when: "'Trusted ' in custom_casks_trust.stdout"
-  when: custom_user_casks | length > 0
-  tags:
-    - taps
     - custom-tools
     - install
 

@@ -1,13 +1,4 @@
 ---
-- name: Tap terraform-linters repository
-  community.general.homebrew_tap:
-    name: terraform-linters/tap
-    state: present
-  tags:
-    - taps # the CI check mode taps them for real first (check-mode.yml)
-    - install
-    - iac
-    - terraform
 
 - name: Install terraform
   community.general.homebrew:
@@ -28,16 +19,6 @@
     state: present
   when: install_tfsec | bool
   tags:
-    - install
-    - iac
-    - terraform
-
-- name: Trust tflint from terraform-linters tap
-  ansible.builtin.command: brew trust --cask terraform-linters/tap/tflint
-  register: tflint_trust
-  changed_when: "'Trusted ' in tflint_trust.stdout"
-  tags:
-    - taps
     - install
     - iac
     - terraform

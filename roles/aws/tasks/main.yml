@@ -11,26 +11,6 @@
     - install
     - aws
 
-- name: Tap granted repository
-  community.general.homebrew_tap:
-    name: common-fate/granted
-    state: present
-  when: install_aws | bool
-  tags:
-    - taps # the CI check mode taps them for real first (check-mode.yml)
-    - install
-    - aws
-
-- name: Trust granted from common-fate tap
-  ansible.builtin.command: brew trust --formula common-fate/granted/granted
-  register: granted_trust
-  changed_when: "'Trusted ' in granted_trust.stdout"
-  when: install_aws | bool
-  tags:
-    - taps
-    - install
-    - aws
-
 - name: Install granted (AWS role assumption)
   community.general.homebrew:
     name: common-fate/granted/granted

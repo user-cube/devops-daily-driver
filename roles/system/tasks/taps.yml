@@ -1,0 +1,32 @@
+---
+# Every third-party tap and what we trust from it (brew_taps, defaults/main.yml).
+# Runs first, so the installs in the other roles find the taps and the trust.
+- name: Add the Homebrew taps
+  community.general.homebrew_tap:
+    name: "{{ brew_taps | selectattr('enabled') | map(attribute='name') | list + custom_user_taps }}"
+    state: present
+  tags:
+    - taps # the CI check mode taps them for real first (check-mode.yml)
+    - install
+
+- name: Trust the formulae we install from them
+  ansible.builtin.command: brew trust --formula {{ trusted_formulae | join(' ') }}
+  vars:
+    trusted_formulae: "{{ brew_taps | selectattr('enabled') | map(attribute='formulae') | flatten + custom_user_tools }}"
+  register: formulae_trust
+  changed_when: "'Trusted ' in formulae_trust.stdout"
+  when: trusted_formulae | length > 0
+  tags:
+    - taps
+    - install
+
+- name: Trust the casks we install from them
+  ansible.builtin.command: brew trust --cask {{ trusted_casks | join(' ') }}
+  vars:
+    trusted_casks: "{{ brew_taps | selectattr('enabled') | map(attribute='casks') | flatten + custom_user_casks }}"
+  register: casks_trust
+  changed_when: "'Trusted ' in casks_trust.stdout"
+  when: trusted_casks | length > 0
+  tags:
+    - taps
+    - install
