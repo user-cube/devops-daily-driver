@@ -40,6 +40,8 @@
     - install
     - fonts
 
+# font-sf-pro is a .pkg: its installer calls sudo. mac_sudo_password comes from
+# the play's vars_prompt; if left empty the parameter is omitted entirely.
 - name: Install SketchyBar fonts (app icons, SF Pro, Hack Nerd Font for icons)
   community.general.homebrew_cask:
     name:
@@ -47,6 +49,7 @@
       - font-sf-pro
       - font-hack-nerd-font
     state: present
+    sudo_password: "{{ mac_sudo_password | default(omit, true) }}"
   tags:
     - install
     - fonts
