@@ -13,6 +13,7 @@
   community.general.homebrew:
     name:
       - k9s
+      - sofka # Kubernetes TUI in Rust, next to k9s (config in the dotfiles)
       - stern
     state: present
   tags:
@@ -28,6 +29,7 @@
       - kyverno
       - kubeconform
       - kubecolor
+      - kubie # a kube context per shell, not the global one (config in the dotfiles)
       - dyff # YAML diff by structure: helm template before / after a values change
       - popeye # cluster sanitizer: missing limits / probes, latest tags, orphans
       - pluto # deprecated / removed apiVersions, in manifests and Helm releases
