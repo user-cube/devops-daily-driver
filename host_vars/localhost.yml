@@ -26,7 +26,6 @@ custom_user_taps:
   - jnsahaj/lumen
 
 custom_user_tools:
-  - user-cube/tap/kontext
   - user-cube/tap/aws-cli-manager
   - jnsahaj/lumen/lumen # side-by-side diff viewer (tmux popup, cmd-shift-g)
   # Optional, uncomment to install:
