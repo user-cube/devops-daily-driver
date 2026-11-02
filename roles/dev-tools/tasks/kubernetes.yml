@@ -29,7 +29,6 @@
       - kyverno
       - kubeconform
       - kubecolor
-      - kubie # a kube context per shell, not the global one (config in the dotfiles)
       - dyff # YAML diff by structure: helm template before / after a values change
       - popeye # cluster sanitizer: missing limits / probes, latest tags, orphans
       - pluto # deprecated / removed apiVersions, in manifests and Helm releases
