@@ -24,4 +24,4 @@ Optional, all default `false` (`defaults/main.yml`, override in `host_vars`):
 their binaries land in `~/.krew/bin`, which the dotfiles `.zshrc` puts on PATH.
 
 Commit signing (GPG, or SSH keys from an agent) is in
-[the main README](../../README.md#commit-signing).
+[Commit signing](https://github.com/user-cube/devops-daily-driver/wiki/Commit-signing) in the wiki.

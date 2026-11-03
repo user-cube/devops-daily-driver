@@ -23,4 +23,4 @@ Bitwarden session and Raycast installed, so it runs by hand after the first run:
 ansible-playbook daily-driver.yml --tags raycast-import   # give the sudo password
 ```
 
-More in [the main README](../../README.md#raycast).
+More in [Raycast](https://github.com/user-cube/devops-daily-driver/wiki/Raycast) in the wiki.

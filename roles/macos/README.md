@@ -2,7 +2,7 @@
 
 | Tasks | Tags | |
 |---|---|---|
-| `macos.yml` | `macos`, `dock`, `menubar`, `finder`, `keyboard`, `appearance`, `screenshots` | macOS `defaults`: what each one sets is in [the main README](../../README.md#macos-settings) |
+| `macos.yml` | `macos`, `dock`, `menubar`, `finder`, `keyboard`, `appearance`, `screenshots` | macOS `defaults`: what each one sets is in [macOS settings](https://github.com/user-cube/devops-daily-driver/wiki/macOS-settings) in the wiki |
 | `touchid.yml` | `macos`, `touchid` | Touch ID for sudo in `/etc/pam.d/sudo_local` (survives macOS updates), after `pam_reattach` so it also works inside tmux; skipped over SSH. Needs the sudo password asked at the start of the run |
 | `permissions.yml` | `permissions`, `aerospace` (never in a full run) | the privacy permissions guide below |
 
@@ -21,4 +21,4 @@ ansible-playbook daily-driver.yml --tags permissions
 Run it again after `brew upgrade sketchybar`: the grant is tied to the exact
 binary under `/opt/homebrew/Cellar/sketchybar/<version>/`, so an upgrade drops
 it (the Slack/Discord badges turn grey). The full table is in
-[the main README](../../README.md#privacy-permissions-aerospace-setup).
+[Privacy permissions](https://github.com/user-cube/devops-daily-driver/wiki/Privacy-permissions) in the wiki.
