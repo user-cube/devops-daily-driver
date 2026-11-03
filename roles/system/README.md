@@ -17,12 +17,15 @@ Clones `dotfiles_repo` to `dotfiles_dest` (`~/dotfiles`), then does what
   list does that)
 - adds `Include ~/.config/ssh/*.conf` at the top of `~/.ssh/config` (ControlMaster
   defaults; the rest of that file stays per machine)
-- copies `.zshrc` and `.p10k.zsh` (overwritten every run: per-machine shell
-  config goes in `~/.zshrc.local`), and the gitconfigs; `.gitconfig-work` only
-  when missing (the repo holds a placeholder)
+- copies the files the dotfiles' `.config/dotfiles/home-files` lists (`.zshrc`,
+  `.p10k.zsh`, the gitconfigs), overwritten every run: per-machine shell config
+  goes in `~/.zshrc.local`. The list is the dotfiles' (`dotfiles-sync` reads it
+  too): a file added there needs nothing here. `.gitconfig-work` only when
+  missing (the repo holds a placeholder)
 - installs Go and runs the dotfiles' `.config/dotfiles/install.sh`: builds the
-  Go tools, downloads the SketchyBar icon map, installs the Hue VS Code
-  extension, removes obsolete files. A new step goes in that script, not here
+  Go tools, downloads the SketchyBar icon map, installs the VS Code extensions
+  and links its settings, copies the LaunchAgents, applies Rex's Settings,
+  removes obsolete files. A new step goes in that script, not here
 - reloads tmux, AeroSpace, borders and SketchyBar through handlers when
   something changed
 

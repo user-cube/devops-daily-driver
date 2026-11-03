@@ -205,9 +205,10 @@ ansible-playbook daily-driver.yml --tags aws -e install_aws=true
 Clones the repository defined in `host_vars/localhost.yml` (macOS only) and does
 what the dotfiles' `dotfiles-sync` does: syncs `.config` to `~/.config`, `git_hooks`
 to `~/git_hooks` and `claude` to `~/.claude`, includes the dotfiles ssh defaults
-from `~/.ssh/config`, copies `.zshrc`, `.p10k.zsh` and the gitconfigs
-(`.gitconfig-work` only when missing), then runs the dotfiles'
-`.config/dotfiles/install.sh` (Go tools, SketchyBar icon map, Hue, obsolete files).
+from `~/.ssh/config`, copies the files the dotfiles' `.config/dotfiles/home-files`
+lists (`.zshrc`, `.p10k.zsh`, the gitconfigs; `.gitconfig-work` only when missing),
+then runs the dotfiles' `.config/dotfiles/install.sh` (Go tools, SketchyBar icon
+map, VS Code, LaunchAgents, Rex's Settings, obsolete files).
 A change reloads tmux, AeroSpace, borders and SketchyBar. Details:
 [`roles/system/README.md`](roles/system/README.md).
 

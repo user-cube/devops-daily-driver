@@ -59,22 +59,42 @@
     - install
     - ssh
 
-- name: Copy .zshrc to ~/.zshrc
-  ansible.builtin.copy:
-    src: "{{ dotfiles_dest }}/.zshrc"
-    dest: "{{ home_dir }}/.zshrc"
-    remote_src: true
-    mode: "0644"
+# The files of the dotfiles' root copied to ~ (.zshrc, .p10k.zsh, the git
+# configs), overwriting them: the dotfiles' one list, .config/dotfiles/home-files,
+# which dotfiles-sync reads too. A file added there is copied here as well.
+# In --check the clone isn't pulled, so an older one may not have the list yet:
+# the copy is skipped then; a real run pulls first, and a missing list fails it
+- name: Read the dotfiles home-files list
+  ansible.builtin.slurp:
+    src: "{{ dotfiles_dest }}/.config/dotfiles/home-files"
+  register: dotfiles_home_files
+  failed_when: dotfiles_home_files is failed and not ansible_check_mode
   tags:
     - dotfiles
     - install
 
-- name: Copy .p10k.zsh to ~/.p10k.zsh
+- name: Copy the dotfiles home files to HOME
   ansible.builtin.copy:
-    src: "{{ dotfiles_dest }}/.p10k.zsh"
-    dest: "{{ home_dir }}/.p10k.zsh"
+    src: "{{ dotfiles_dest }}/{{ item }}"
+    dest: "{{ home_dir }}/{{ item }}"
     remote_src: true
     mode: "0644"
+  loop: "{{ dotfiles_home_files.content | b64decode | split('\n') | map('trim') | reject('match', '^(#|$)') | list }}"
+  when: dotfiles_home_files.content is defined
+  tags:
+    - dotfiles
+    - install
+
+# .gitconfig-work keeps a redacted placeholder in the public dotfiles repo, so
+# the real address is filled in locally and has to survive a run: seeded only
+# when missing (it is not in home-files for that reason)
+- name: Seed ~/.gitconfig-work
+  ansible.builtin.copy:
+    src: "{{ dotfiles_dest }}/.gitconfig-work"
+    dest: "{{ home_dir }}/.gitconfig-work"
+    remote_src: true
+    mode: "0644"
+    force: false
   tags:
     - dotfiles
     - install
@@ -110,46 +130,21 @@
     - install
 
 # Everything after the files are in place, the same steps dotfiles-sync runs
-# (dotfiles .config/dotfiles/install.sh): build the Go tools (commit-msg hook,
-# local-files, SketchyBar checks, Claude Code hook: Claude Code's Bash and
-# Read are blocked until it is built), the SketchyBar icon map, the Hue VS Code
-# extension, and removing the files the repo no longer installs.
+# (dotfiles .config/dotfiles/install.sh): build the Go tools (the commit-msg and
+# sops-guard hooks, kube-guard, local-files, SketchyBar checks, Claude Code hook:
+# commits stop until sops-guard is built, Claude Code's Bash and Read until its
+# hook is), the SketchyBar icon map, the VS Code extensions and settings links,
+# lazygit's config link, the LaunchAgents, Rex's Settings, and removing the
+# files the repo no longer installs. Changed: any of the lines it prints for one.
 - name: Build and install the dotfiles tools
   ansible.builtin.command: "{{ home_dir }}/.config/dotfiles/install.sh"
   register: dotfiles_install
-  changed_when: "dotfiles_install.stdout is search('^(built|removed|icon_map.sh: downloaded|hue: installed)', multiline=True)"
+  changed_when: dotfiles_install.stdout is search(system_install_changed, multiline=True)
+  vars:
+    system_install_changed: >-
+      ^(built|removed|linked|installed LaunchAgent|icon_map.sh: downloaded|hue: installed|VS Code: (installed|kept)|Rex: )
   notify:
     - Reload sketchybar
-  tags:
-    - dotfiles
-    - install
-
-- name: Check which gitconfig files exist in dotfiles
-  ansible.builtin.stat:
-    path: "{{ dotfiles_dest }}/{{ item }}"
-  register: gitconfig_files_check
-  loop:
-    - .gitconfig-hooks
-    - .gitconfig-personal-github
-    - .gitconfig-personal-gitlab
-    - .gitconfig-work
-    - .gitconfig
-  tags:
-    - dotfiles
-    - install
-
-# .gitconfig-work keeps a redacted placeholder in the public dotfiles repo, so
-# the real address is filled in locally and has to survive a run. The other
-# two are owned by the repo and get overwritten as usual.
-- name: Copy gitconfig files from dotfiles to HOME
-  ansible.builtin.copy:
-    src: "{{ dotfiles_dest }}/{{ item.item }}"
-    dest: "{{ home_dir }}/{{ item.item }}"
-    remote_src: true
-    mode: "0644"
-    force: "{{ item.item != '.gitconfig-work' }}"
-  loop: "{{ gitconfig_files_check.results }}"
-  when: item.stat.exists | default(false)
   tags:
     - dotfiles
     - install
