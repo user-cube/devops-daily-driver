@@ -28,6 +28,9 @@
       - helm-docs
       - kyverno
       - kubeconform
+      - kustomize # build overlays: the dotfiles' k8s-reviewer agent reads the built output
+      - kube-linter # static analysis of manifests and charts (k8s-reviewer)
+      - kube-score # reliability and security score of manifests (k8s-reviewer)
       - kubecolor
       - dyff # YAML diff by structure: helm template before / after a values change
       - popeye # cluster sanitizer: missing limits / probes, latest tags, orphans
